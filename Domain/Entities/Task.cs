@@ -13,8 +13,8 @@ namespace Domain.Entities
         public DateTime? TaskEndDate { get; set; }
         public required TaskRole TaskRole { get; set; } = 0;
 
-
         public virtual Repository Repository { get; set; } = null!;
         public ICollection<TaskStage> TaskStages { get; set; } = new List<TaskStage>();
+        public ICollection<TaskOwning> TaskOwnings { get; set; } = new List<TaskOwning>();
     }
 }
