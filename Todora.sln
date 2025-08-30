@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Todora.Core", "Todora.Core", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Todora.API", "Todora.API", "{0DD8D880-6C6F-45A2-A69A-D8ED49A83871}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Todora.Infrastructure", "Todora.Infrastructure", "{C8283C74-BB99-4B8F-A2CB-7CA461D69648}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{1A0C371D-234D-4A6F-B502-42B73DB93B14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{D8DCFA7C-2629-4214-947E-4C5C325BED1A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{361113C8-768A-4D0C-8390-1828C31D73F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "Persistence\Persistence.csproj", "{70A1DA38-8471-4BCC-9296-17669F2BDB67}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1A0C371D-234D-4A6F-B502-42B73DB93B14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A0C371D-234D-4A6F-B502-42B73DB93B14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A0C371D-234D-4A6F-B502-42B73DB93B14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A0C371D-234D-4A6F-B502-42B73DB93B14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8DCFA7C-2629-4214-947E-4C5C325BED1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8DCFA7C-2629-4214-947E-4C5C325BED1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8DCFA7C-2629-4214-947E-4C5C325BED1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8DCFA7C-2629-4214-947E-4C5C325BED1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{361113C8-768A-4D0C-8390-1828C31D73F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{361113C8-768A-4D0C-8390-1828C31D73F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{361113C8-768A-4D0C-8390-1828C31D73F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{361113C8-768A-4D0C-8390-1828C31D73F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70A1DA38-8471-4BCC-9296-17669F2BDB67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70A1DA38-8471-4BCC-9296-17669F2BDB67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70A1DA38-8471-4BCC-9296-17669F2BDB67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70A1DA38-8471-4BCC-9296-17669F2BDB67}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1A0C371D-234D-4A6F-B502-42B73DB93B14} = {0DD8D880-6C6F-45A2-A69A-D8ED49A83871}
+		{D8DCFA7C-2629-4214-947E-4C5C325BED1A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{361113C8-768A-4D0C-8390-1828C31D73F6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{70A1DA38-8471-4BCC-9296-17669F2BDB67} = {C8283C74-BB99-4B8F-A2CB-7CA461D69648}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2C0033B9-1882-451E-B01D-0D462CB0828D}
+	EndGlobalSection
+EndGlobal
