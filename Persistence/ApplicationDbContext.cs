@@ -15,9 +15,9 @@ namespace Persistence
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Repository> Repositories { get; set; }
         public DbSet<RepositoryRole> RepositoryRoles { get; set; }
-        public DbSet<Role> Roles { get; set; }
+        public DbSet<Role> Rolles { get; set; }
         public DbSet<Stage> Stages { get; set; }
-        public DbSet<Domain.Entities.Task> Tasks { get; set; }
+        public DbSet<WorkTask> Tasks { get; set; }
         public DbSet<TaskOwning> TaskOwnings { get; set; }
         public DbSet<TaskStage> TaskStages { get; set; }
 
@@ -28,27 +28,33 @@ namespace Persistence
             //USER SETTINGS
             builder.Entity<User>(entity =>
             {
-                //Building relationships
+                //Building relationships with RepositoryRoles
                 entity.HasMany(u => u.RepositoryRoles)
                       .WithOne(r => r.User)
                       .HasForeignKey(r => r.UserId)
                       .OnDelete(DeleteBehavior.NoAction);
 
+                //Building relationships with TaskStages
                 entity.HasMany(u => u.TaskStages)
                       .WithOne(ts => ts.User)
                       .HasForeignKey(ts => ts.UserId)
                       .OnDelete(DeleteBehavior.NoAction);
 
+                //Building relationships with TaskOwnings
                 entity.HasMany(u => u.TaskOwnings)
                       .WithOne(to => to.User)
                       .HasForeignKey(to => to.UserId)
                       .OnDelete(DeleteBehavior.NoAction);
 
+
+                //Building relationships with Notifications
                 entity.HasMany(u => u.Notifications)
                       .WithOne(n => n.User)
                       .HasForeignKey(n => n.UserId)
                       .OnDelete(DeleteBehavior.NoAction);
 
+
+                //Building relationships with StageNotes
                 entity.HasMany(u => u.StageNotes)
                       .WithOne(st => st.User)
                       .HasForeignKey(st => st.UserId)
@@ -80,6 +86,9 @@ namespace Persistence
                 entity.Property(n => n.NotificationDescription)
                 .IsRequired()
                 .HasMaxLength(200);
+
+                entity.Property(n => n.NotificationTime)
+                .HasColumnType("datetime2(0)");
             });
 
             //REPOSITORY SETTINGS
@@ -103,6 +112,9 @@ namespace Persistence
                 .WithOne(t => t.Repository)
                 .HasForeignKey(t => t.RepositoryRoleId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+                entity.Property(n => n.RepositoryCreateDate)
+                .HasColumnType("datetime2(0)");
 
                 //Setting maxlength for title property
                 entity.Property(n => n.RepositoryTitle)
@@ -200,7 +212,7 @@ namespace Persistence
             });
 
             //TASK SETTINGS
-            builder.Entity<Domain.Entities.Task>(entity => 
+            builder.Entity<Domain.Entities.WorkTask>(entity => 
             {
                 //Setting primary key
                 entity.HasKey(t => t.TaskId);
@@ -208,6 +220,12 @@ namespace Persistence
                 //Setting primary key auto increment
                 entity.Property(t => t.TaskId)
                 .ValueGeneratedOnAdd();
+
+                //Building relationship with User
+                entity.HasOne(t => t.User)
+                .WithMany(s => s.Tasks)
+                .HasForeignKey(t => t.TaskCreatedUserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
                 //Building relationship with Repository
                 entity.HasOne(t => t.Repository)
@@ -234,6 +252,15 @@ namespace Persistence
                 entity.Property(t => t.TaskDescription)
                 .HasMaxLength(200)
                 .IsRequired();
+
+                entity.Property(n => n.TaskCreateDate)
+                .HasColumnType("datetime2(0)");
+
+                entity.Property(n => n.TaskStartDate)
+                .HasColumnType("datetime2(0)"); 
+
+                entity.Property(n => n.TaskEndDate)
+                .HasColumnType("datetime2(0)");
             });
 
             //TASKOWNING SETTINGS
@@ -260,7 +287,14 @@ namespace Persistence
 
                 // Create a composite index on TaskId and UserId to prevent duplicate entries
                 entity.HasIndex(to => new { to.TaskId, to.UserId })
-                .IsUnique();
+                .IsUnique()
+                .HasFilter("[TaskOwningIsActive] = 1");
+
+                entity.Property(n => n.TaskOwningDate)
+                .HasColumnType("datetime2(0)");
+
+                entity.Property(n => n.TaskOwningEndDate)
+                .HasColumnType("datetime2(0)");
             });
 
             //TASKSTAGE SETTINGS
@@ -296,6 +330,9 @@ namespace Persistence
                 .WithOne(sn => sn.TaskStage)
                 .HasForeignKey(sn => sn.TaskStageId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+                entity.Property(n => n.TaskStageDate)
+                .HasColumnType("datetime2(0)");
             });
 
             //STAGENOTE SETTINGS
@@ -323,6 +360,9 @@ namespace Persistence
                 entity.Property(sn => sn.StageNoteText)
                 .HasMaxLength(200)
                 .IsRequired();
+
+                entity.Property(n => n.StageNoteDate)
+                .HasColumnType("datetime2(0)");
             });
         }
 

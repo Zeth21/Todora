@@ -39,7 +39,7 @@ namespace Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("NotificationTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<string>("NotificationTitle")
                         .IsRequired()
@@ -72,7 +72,7 @@ namespace Persistence.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("RepositoryCreateDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<string>("RepositoryDescription")
                         .IsRequired()
@@ -137,7 +137,7 @@ namespace Persistence.Migrations
                     b.HasIndex("RoleName")
                         .IsUnique();
 
-                    b.ToTable("Roles");
+                    b.ToTable("Rolles");
                 });
 
             modelBuilder.Entity("Domain.Entities.Stage", b =>
@@ -170,7 +170,7 @@ namespace Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StageNoteId"));
 
                     b.Property<DateTime>("StageNoteDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<string>("StageNoteText")
                         .IsRequired()
@@ -193,44 +193,6 @@ namespace Persistence.Migrations
                     b.ToTable("StageNote");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Task", b =>
-                {
-                    b.Property<int>("TaskId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskId"));
-
-                    b.Property<int>("RepositoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TaskDescription")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime?>("TaskEndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TaskRole")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("TaskStartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TaskTitle")
-                        .IsRequired()
-                        .HasMaxLength(75)
-                        .HasColumnType("nvarchar(75)");
-
-                    b.HasKey("TaskId");
-
-                    b.HasIndex("RepositoryId", "TaskTitle")
-                        .IsUnique();
-
-                    b.ToTable("Tasks");
-                });
-
             modelBuilder.Entity("Domain.Entities.TaskOwning", b =>
                 {
                     b.Property<int>("TaskOwningId")
@@ -243,7 +205,13 @@ namespace Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("TaskOwningDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2(0)");
+
+                    b.Property<DateTime?>("TaskOwningEndDate")
+                        .HasColumnType("datetime2(0)");
+
+                    b.Property<bool>("TaskOwningIsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -254,7 +222,8 @@ namespace Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.HasIndex("TaskId", "UserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[TaskOwningIsActive] = 1");
 
                     b.ToTable("TaskOwnings");
                 });
@@ -274,7 +243,7 @@ namespace Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("TaskStageDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2(0)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -361,6 +330,59 @@ namespace Persistence.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.WorkTask", b =>
+                {
+                    b.Property<int>("TaskId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskId"));
+
+                    b.Property<int>("RepositoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TaskCreateDate")
+                        .HasColumnType("datetime2(0)");
+
+                    b.Property<string>("TaskCreatedUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TaskDescription")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("TaskEndDate")
+                        .HasColumnType("datetime2(0)");
+
+                    b.Property<bool>("TaskIsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("TaskIsRemoved")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("TaskRole")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("TaskStartDate")
+                        .HasColumnType("datetime2(0)");
+
+                    b.Property<string>("TaskTitle")
+                        .IsRequired()
+                        .HasMaxLength(75)
+                        .HasColumnType("nvarchar(75)");
+
+                    b.HasKey("TaskId");
+
+                    b.HasIndex("TaskCreatedUserId");
+
+                    b.HasIndex("RepositoryId", "TaskTitle")
+                        .IsUnique();
+
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -553,20 +575,9 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Task", b =>
-                {
-                    b.HasOne("Domain.Entities.Repository", "Repository")
-                        .WithMany("Tasks")
-                        .HasForeignKey("RepositoryId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Repository");
-                });
-
             modelBuilder.Entity("Domain.Entities.TaskOwning", b =>
                 {
-                    b.HasOne("Domain.Entities.Task", "Task")
+                    b.HasOne("Domain.Entities.WorkTask", "Task")
                         .WithMany("TaskOwnings")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -591,7 +602,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Task", "Task")
+                    b.HasOne("Domain.Entities.WorkTask", "Task")
                         .WithMany("TaskStages")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -606,6 +617,25 @@ namespace Persistence.Migrations
                     b.Navigation("Stage");
 
                     b.Navigation("Task");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.WorkTask", b =>
+                {
+                    b.HasOne("Domain.Entities.Repository", "Repository")
+                        .WithMany("Tasks")
+                        .HasForeignKey("RepositoryId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany("Tasks")
+                        .HasForeignKey("TaskCreatedUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Repository");
 
                     b.Navigation("User");
                 });
@@ -678,13 +708,6 @@ namespace Persistence.Migrations
                     b.Navigation("TaskStages");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Task", b =>
-                {
-                    b.Navigation("TaskOwnings");
-
-                    b.Navigation("TaskStages");
-                });
-
             modelBuilder.Entity("Domain.Entities.TaskStage", b =>
                 {
                     b.Navigation("StageNotes");
@@ -698,6 +721,15 @@ namespace Persistence.Migrations
 
                     b.Navigation("StageNotes");
 
+                    b.Navigation("TaskOwnings");
+
+                    b.Navigation("TaskStages");
+
+                    b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("Domain.Entities.WorkTask", b =>
+                {
                     b.Navigation("TaskOwnings");
 
                     b.Navigation("TaskStages");
