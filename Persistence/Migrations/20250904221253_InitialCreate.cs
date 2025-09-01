@@ -61,7 +61,7 @@ namespace Persistence.Migrations
                     RepositoryTitle = table.Column<string>(type: "nvarchar(75)", maxLength: 75, nullable: false),
                     RepositoryDescription = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    RepositoryCreateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    RepositoryCreateDate = table.Column<DateTime>(type: "datetime2(0)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,7 +69,7 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Roles",
+                name: "Rolles",
                 columns: table => new
                 {
                     RoleId = table.Column<int>(type: "int", nullable: false)
@@ -78,7 +78,7 @@ namespace Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Roles", x => x.RoleId);
+                    table.PrimaryKey("PK_Rolles", x => x.RoleId);
                 });
 
             migrationBuilder.CreateTable(
@@ -211,7 +211,7 @@ namespace Persistence.Migrations
                     NotificationDescription = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     NotificationStatus = table.Column<int>(type: "int", nullable: false),
                     NotificationType = table.Column<int>(type: "int", nullable: false),
-                    NotificationTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    NotificationTime = table.Column<DateTime>(type: "datetime2(0)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -232,13 +232,22 @@ namespace Persistence.Migrations
                     RepositoryId = table.Column<int>(type: "int", nullable: false),
                     TaskTitle = table.Column<string>(type: "nvarchar(75)", maxLength: 75, nullable: false),
                     TaskDescription = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    TaskStartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TaskEndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    TaskRole = table.Column<int>(type: "int", nullable: false)
+                    TaskCreatedUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TaskCreateDate = table.Column<DateTime>(type: "datetime2(0)", nullable: false),
+                    TaskStartDate = table.Column<DateTime>(type: "datetime2(0)", nullable: true),
+                    TaskEndDate = table.Column<DateTime>(type: "datetime2(0)", nullable: true),
+                    TaskRole = table.Column<int>(type: "int", nullable: false),
+                    TaskIsCompleted = table.Column<bool>(type: "bit", nullable: false),
+                    TaskIsRemoved = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tasks", x => x.TaskId);
+                    table.ForeignKey(
+                        name: "FK_Tasks_AspNetUsers_TaskCreatedUserId",
+                        column: x => x.TaskCreatedUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Tasks_Repositories_RepositoryId",
                         column: x => x.RepositoryId,
@@ -270,9 +279,9 @@ namespace Persistence.Migrations
                         principalTable: "Repositories",
                         principalColumn: "RepositoryId");
                     table.ForeignKey(
-                        name: "FK_RepositoryRoles_Roles_RoleId",
+                        name: "FK_RepositoryRoles_Rolles_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "Roles",
+                        principalTable: "Rolles",
                         principalColumn: "RoleId");
                 });
 
@@ -284,7 +293,9 @@ namespace Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TaskId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TaskOwningDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    TaskOwningDate = table.Column<DateTime>(type: "datetime2(0)", nullable: false),
+                    TaskOwningEndDate = table.Column<DateTime>(type: "datetime2(0)", nullable: true),
+                    TaskOwningIsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -310,7 +321,7 @@ namespace Persistence.Migrations
                     TaskId = table.Column<int>(type: "int", nullable: false),
                     StageId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TaskStageDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    TaskStageDate = table.Column<DateTime>(type: "datetime2(0)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -340,7 +351,7 @@ namespace Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TaskStageId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    StageNoteDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StageNoteDate = table.Column<DateTime>(type: "datetime2(0)", nullable: false),
                     StageNoteText = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
@@ -419,8 +430,8 @@ namespace Persistence.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Roles_RoleName",
-                table: "Roles",
+                name: "IX_Rolles_RoleName",
+                table: "Rolles",
                 column: "RoleName",
                 unique: true);
 
@@ -444,7 +455,8 @@ namespace Persistence.Migrations
                 name: "IX_TaskOwnings_TaskId_UserId",
                 table: "TaskOwnings",
                 columns: new[] { "TaskId", "UserId" },
-                unique: true);
+                unique: true,
+                filter: "[TaskOwningIsActive] = 1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TaskOwnings_UserId",
@@ -456,6 +468,11 @@ namespace Persistence.Migrations
                 table: "Tasks",
                 columns: new[] { "RepositoryId", "TaskTitle" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tasks_TaskCreatedUserId",
+                table: "Tasks",
+                column: "TaskCreatedUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TaskStages_StageId",
@@ -507,19 +524,19 @@ namespace Persistence.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Roles");
+                name: "Rolles");
 
             migrationBuilder.DropTable(
                 name: "TaskStages");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Stages");
 
             migrationBuilder.DropTable(
                 name: "Tasks");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Repositories");

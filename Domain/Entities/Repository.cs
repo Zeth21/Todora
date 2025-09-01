@@ -7,10 +7,10 @@
         public required string RepositoryTitle { get; set; }
         public required string RepositoryDescription { get; set; }
         public bool IsDeleted { get; set; } = false;
-        public DateTime RepositoryCreateDate { get; set; } = DateTime.Now;
+        public DateTime RepositoryCreateDate { get; set; } = DateTime.UtcNow;
 
 
-        public ICollection<Task> Tasks { get; set; } = new List<Task>();
+        public ICollection<WorkTask> Tasks { get; set; } = new List<WorkTask>();
         public ICollection<RepositoryRole> RepositoryRoles { get; set; } = new List<RepositoryRole>();
     }
 }

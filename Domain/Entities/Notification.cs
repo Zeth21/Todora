@@ -11,7 +11,7 @@ namespace Domain.Entities
         public required string NotificationDescription { get; set; }
         public NotificationStatus NotificationStatus { get; set; }
         public NotificationType NotificationType { get; set; }
-        public DateTime NotificationTime { get; set; }
+        public DateTime NotificationTime { get; set; } = DateTime.UtcNow;
 
         public virtual User User { get; set; } = null!;
     }
