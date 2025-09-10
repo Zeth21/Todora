@@ -1,19 +1,3 @@
-using API.Middlewares;
-using Application.CQRS.Results;
-using Domain.Entities;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.OpenApi.Models;
-using Persistence;
-using Persistence.Seed;
-using Persistence.ServiceRegistration;
-using Serilog;
-using Serilog.Events;
-using Serilog.Sinks.MSSqlServer;
-using System.Collections.ObjectModel;
-using System.Data;
-using System.Text.Json;
-
 var builder = WebApplication.CreateBuilder(args);
 
 //var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -206,18 +190,11 @@ using (var scope = app.Services.CreateScope())
         Log.Error(ex, "Veritabaný seed'lenirken bir hata oluþtu.");
     }
 }
-
+//CORS
+app.UseHttpsRedirection();
 
 app.UseHttpsRedirection();
 
-app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
-app.UseMiddleware<ResultWrapperMiddleware>();
-app.UseMiddleware<CorrelationIdMiddleware>();
-app.UseMiddleware<LoggingMiddleware>();
-//app.UseCors();
-
-// Authentication & Authorization
-app.UseAuthentication();
 app.UseAuthorization();
 
 // Controllers
