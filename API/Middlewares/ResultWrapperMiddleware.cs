@@ -1,5 +1,4 @@
 ﻿using Application.CQRS.Results;
-using System.Net;
 using System.Text.Json;
 
 namespace API.Middlewares
@@ -18,17 +17,17 @@ namespace API.Middlewares
             var originalBodyStream = context.Response.Body;
 
             await using var responseBody = new MemoryStream();
+
             context.Response.Body = responseBody;
 
             try
             {
-            await _next(context);
+                await _next(context);
 
-            if (ShouldWrapResponse(context))
-            {
-                responseBody.Seek(0, SeekOrigin.Begin);
-                var bodyAsText = await new StreamReader(responseBody).ReadToEndAsync();
-                responseBody.Seek(0, SeekOrigin.Begin);
+                if (ShouldWrapResponse(context))
+                {
+                    responseBody.Seek(0, SeekOrigin.Begin);
+                    var bodyAsText = await new StreamReader(responseBody).ReadToEndAsync();
 
                     Result<object> wrappedResponse;
 
@@ -36,7 +35,6 @@ namespace API.Middlewares
                     {
                         wrappedResponse = Result<object>.Success(data: null, message: bodyAsText);
                     }
-
                     else
                     {
                         object? bodyObject = string.IsNullOrWhiteSpace(bodyAsText)
@@ -45,15 +43,19 @@ namespace API.Middlewares
                         wrappedResponse = Result<object>.Success(bodyObject);
                     }
 
-                var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-                var json = JsonSerializer.Serialize(wrappedResponse, options);
-                responseBody.SetLength(0);
-                await context.Response.WriteAsync(json);
-            }
+                    var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+                    var json = JsonSerializer.Serialize(wrappedResponse, options);
+
+                    context.Response.ContentType = "application/json; charset=utf-8";
+
+                    responseBody.SetLength(0);
+                    await context.Response.WriteAsync(json);
+                }
             }
             catch (Exception)
             {
                 context.Response.Body = originalBodyStream;
+
                 throw;
             }
 
@@ -69,10 +71,15 @@ namespace API.Middlewares
                 return false;
             }
 
+            if (context.Request.Path.StartsWithSegments("/swagger"))
             {
                 return false;
             }
 
+            var contentType = context.Response.ContentType;
+            if (contentType != null &&
+                !contentType.Contains("application/json", StringComparison.OrdinalIgnoreCase) &&
+                !contentType.Contains("text/plain", StringComparison.OrdinalIgnoreCase))
             {
                 return false;
             }
