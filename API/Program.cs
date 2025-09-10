@@ -1,3 +1,19 @@
+using API.Middlewares;
+using Application.CQRS.Results;
+using Domain.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi.Models;
+using Persistence;
+using Persistence.Seed;
+using Persistence.ServiceRegistration;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.MSSqlServer;
+using System.Collections.ObjectModel;
+using System.Data;
+using System.Text.Json;
+
 var builder = WebApplication.CreateBuilder(args);
 
 //var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -43,11 +59,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     // Password Settings
-    options.Password.RequireDigit = true; 
-    options.Password.RequiredLength = 8; 
-    options.Password.RequireLowercase = true; 
-    options.Password.RequireUppercase = true; 
-    options.Password.RequireNonAlphanumeric = true; 
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
 
     // User Settings
     options.User.RequireUniqueEmail = true;
@@ -59,7 +75,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders(); 
+.AddDefaultTokenProviders();
 
 
 
@@ -162,21 +178,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// ===================== Middleware Pipeline =====================
-
-// Swagger
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Todora API V1");
-        c.RoutePrefix = string.Empty;
-    });
-}
-
-// Invoking Seeder
-
+// ===================== Seeding =====================
 using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
@@ -190,16 +192,33 @@ using (var scope = app.Services.CreateScope())
         Log.Error(ex, "Veritabaný seed'lenirken bir hata oluþtu.");
     }
 }
+
+// ===================== Middleware Pipeline =====================
+
+// Swagger
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Todora API V1");
+        c.RoutePrefix = string.Empty;
+    });
+}
 //CORS
 app.UseHttpsRedirection();
 
-app.UseHttpsRedirection();
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+app.UseMiddleware<ResultWrapperMiddleware>();
+app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseMiddleware<LoggingMiddleware>();
+//app.UseCors();
 
+// Authentication & Authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Controllers
 app.MapControllers();
 
 app.Run();
-
-
