@@ -13,7 +13,7 @@ using Serilog.Sinks.MSSqlServer;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Text.Json;
-
+using Application;
 var builder = WebApplication.CreateBuilder(args);
 
 //var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -51,6 +51,7 @@ builder.Host.UseSerilog();
 
 // ===================== Services =====================
 builder.Services.AddPersistenceServices();
+builder.Services.AddApplicationServices();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 

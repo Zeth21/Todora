@@ -1,5 +1,7 @@
-﻿using Application.Interfaces.UnitOfWork;
+﻿using Application.Interfaces.Data.Security;
+using Application.Interfaces.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
+using Persistence.Data.Security;
 
 namespace Persistence.ServiceRegistration
 {
@@ -10,6 +12,7 @@ namespace Persistence.ServiceRegistration
 
 
             services.AddDbContext<ApplicationDbContext>();
+            services.AddTransient<IJWTGenerator, JWTGenerator>();
 
             //services.AddScoped<INotificationRepository, NotificationRepository>();
             //services.AddScoped<IRepositoryRepository, RepositoryRepository>();
