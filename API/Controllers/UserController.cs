@@ -1,4 +1,5 @@
-﻿using Application.CQRS.Queries.UserQueries;
+﻿using Application.CQRS.Commands.UserCommands;
+using Application.CQRS.Queries.UserQueries;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace API.Controllers
         {
             _mediator = mediator;
         }
-        [HttpPost]
+        [HttpPost("/login")]
         public async Task<IActionResult> Login([FromBody] UserLoginQuery request, CancellationToken cancellationToken = default) 
         {
             var result = await _mediator.Send(request, cancellationToken);
@@ -23,6 +24,17 @@ namespace API.Controllers
                 return Ok(result.Data);
             }
             return StatusCode(result.StatusCode,result);
+        }
+
+        [HttpPost("/register")]
+        public async Task<IActionResult> Register([FromBody] UserCreateCommand request, CancellationToken cancellationToken = default)
+        {
+            var result = await _mediator.Send(request, cancellationToken);
+            if (result.IsSucceeded)
+            {
+                return Ok(result.Message);
+            }
+            return StatusCode(result.StatusCode, result);
         }
     }
 }

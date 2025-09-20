@@ -28,6 +28,14 @@ namespace Persistence
             //USER SETTINGS
             builder.Entity<User>(entity =>
             {
+                //Setting rules for Name property
+                entity.Property(x => x.Name)
+                    .HasMaxLength(30);
+
+                //Setting rules for Surname property
+                entity.Property(x => x.Surname)
+                    .HasMaxLength(30);
+
                 //Building relationships with RepositoryRoles
                 entity.HasMany(u => u.RepositoryRoles)
                       .WithOne(r => r.User)

@@ -6,6 +6,9 @@ namespace Domain.Entities
 
     public class User : IdentityUser
     {
+
+        public string Name { get; set; } = null!;
+        public string Surname { get; set; } = null!;
         public string UserPhotoPath { get; set; } = "default-profile.png";
         public bool UserIsActive { get; set; } = true;
 
