@@ -8,7 +8,7 @@
         public required string RepositoryDescription { get; set; }
         public bool IsDeleted { get; set; } = false;
         public DateTime RepositoryCreateDate { get; set; } = DateTime.UtcNow;
-
+        public required string RepositoryUserId { get; set; } 
 
         public ICollection<WorkTask> Tasks { get; set; } = new List<WorkTask>();
         public ICollection<RepositoryRole> RepositoryRoles { get; set; } = new List<RepositoryRole>();

@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces.UnitOfWork;
 using Application.Interfaces.Repositories;
 using Persistence.Repositories;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Persistence
 {
@@ -19,6 +20,8 @@ namespace Persistence
         private ITaskOwningRepository? _taskOwningRepository;
         private ITaskStageRepository? _taskStageRepository;
         private IWorkTaskRepository? _workTaskRepository;
+
+        private IDbContextTransaction? _transaction;
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -48,6 +51,24 @@ namespace Persistence
         {
             _context.Dispose();
             GC.SuppressFinalize(this);
+        }
+
+        // Begins transaction
+        public async Task BeginTransactionAsync() 
+        {
+            _transaction = await _context.Database.BeginTransactionAsync();
+        }
+
+        // Commits transaction
+        public async Task CommitTransactionAsync() 
+        {
+            await _transaction!.CommitAsync();
+        }
+
+        // Rollbacks transaction
+        public async Task RollbackTransactionAsync() 
+        {
+            await _transaction!.RollbackAsync();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace API.Controllers
         {
             _mediator = mediator;
         }
-        [HttpPost("/login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginQuery request, CancellationToken cancellationToken = default) 
         {
             var result = await _mediator.Send(request, cancellationToken);
@@ -26,7 +26,7 @@ namespace API.Controllers
             return StatusCode(result.StatusCode,result);
         }
 
-        [HttpPost("/register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserCreateCommand request, CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(request, cancellationToken);

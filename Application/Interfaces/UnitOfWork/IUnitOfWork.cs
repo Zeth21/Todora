@@ -19,5 +19,8 @@ namespace Application.Interfaces.UnitOfWork
         ITaskStageRepository TaskStages { get; }
         IWorkTaskRepository WorkTasks { get; }
         Task<int> CompleteAsync();
+        Task BeginTransactionAsync();
+        Task CommitTransactionAsync();
+        Task RollbackTransactionAsync();
     }
 }
