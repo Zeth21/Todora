@@ -35,5 +35,8 @@ namespace Application.CQRS.Results
 
         public static Result<T> Forbidden()
             => new Result<T> { IsSucceeded = false, Message = "Forbidden", StatusCode = 403 };
+
+        public static Result<T> NoContent(string message = "Nothing has found!")
+            => new Result<T> { IsSucceeded = true, Message = message, StatusCode = 204 };
     }
 }

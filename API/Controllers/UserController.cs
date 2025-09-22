@@ -36,5 +36,16 @@ namespace API.Controllers
             }
             return StatusCode(result.StatusCode, result);
         }
+
+        [HttpGet("find")]
+        public async Task<IActionResult> FindUsers([FromQuery] UserFindByUserNameQuery request, CancellationToken cancellationToken = default) 
+        {
+            var result = await _mediator.Send(request, cancellationToken);
+            if (result.IsSucceeded)
+            {
+                return Ok(result.Data);
+            }
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }

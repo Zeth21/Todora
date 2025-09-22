@@ -28,12 +28,10 @@ namespace Domain.Strings
         //API Response Values
         public const string Unauthorized = "Unauthorized!";
 
-
         //Common Values
         public const string NameCannotBeNull = "Name value cannot be null!";
         public const string TitleCannotBeNull = "Title value cannot be null!";
         public const string DescriptionCannotBeNull = "Description value cannot be null!";
         public const string AllHasFoundSuccessfully = "All has found successfully!";
-
     }
 }

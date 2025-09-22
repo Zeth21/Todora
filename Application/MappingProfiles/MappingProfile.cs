@@ -29,6 +29,8 @@ namespace Application.MappingProfiles
 
             CreateMap<Repository, RepositoryGetUserOwningsQueryResult>();
             CreateMap<Repository, RepositoryGetUserWorkingsQueryResult>();
+
+            CreateMap<User, UserFindByUserNameQueryResult>();
         }
     }
 }
