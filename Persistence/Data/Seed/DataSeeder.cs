@@ -1,5 +1,7 @@
 ﻿using Domain.Entities;
+using Domain.Enum;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Persistence.Seed
@@ -10,6 +12,7 @@ namespace Persistence.Seed
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+            var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
             string[] roleNames = { "Admin", "User" };
             foreach (var roleName in roleNames)
@@ -62,6 +65,25 @@ namespace Persistence.Seed
                 {
                     await userManager.AddToRoleAsync(newRegularUser, "User");
                 }
+            }
+
+            //Role seeding
+            var checkRoleRecords = await context.Rolles.ToListAsync();
+            if (!checkRoleRecords.Any()) 
+            {
+                var roles = new List<Role>();
+                foreach (var prop in Enum.GetValues(typeof(RoleValues)))
+                {
+                    if (prop is not null)
+                    {
+                        var newRole = new Role { RoleName = (RoleValues)prop };
+                        roles.Add(newRole);
+                    }
+                }
+                await context.Rolles.AddRangeAsync(roles);
+                var affectedRows = await context.SaveChangesAsync();
+                if (affectedRows <= 0)
+                    throw new Exception("Seeder couldn't saved roles to the database!");
             }
         }
     }

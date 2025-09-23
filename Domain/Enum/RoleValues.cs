@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace Domain.Enum
 {
-    public enum TaskRole
+    public enum RoleValues
     {
-        Public = 0,
         JuniorMember = 1,
         MidMember = 2,
         SeniorMember = 3,
         Manager = 4,
-        Owner = 5
+        Owner = 5,
+        ManagerGuest = 6,
+        Guest = 7
     }
 }

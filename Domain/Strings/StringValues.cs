@@ -33,5 +33,7 @@ namespace Domain.Strings
         public const string TitleCannotBeNull = "Title value cannot be null!";
         public const string DescriptionCannotBeNull = "Description value cannot be null!";
         public const string AllHasFoundSuccessfully = "All has found successfully!";
+        public const string NothingHasFound = "Nothing has found!";
+
     }
 }

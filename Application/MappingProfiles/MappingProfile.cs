@@ -1,14 +1,10 @@
 ﻿using Application.CQRS.Commands.RepositoryCommands;
 using Application.CQRS.Commands.UserCommands;
 using Application.CQRS.Results.RepositoryResults;
+using Application.CQRS.Results.RoleResults;
 using Application.CQRS.Results.UserResults;
 using AutoMapper;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.MappingProfiles
 {
@@ -31,6 +27,10 @@ namespace Application.MappingProfiles
             CreateMap<Repository, RepositoryGetUserWorkingsQueryResult>();
 
             CreateMap<User, UserFindByUserNameQueryResult>();
+
+            CreateMap<Role, RoleGetAllQueryResult>()
+                .ForMember(x => x.Id, o => o.MapFrom(s => s.RoleId))
+                .ForMember(x => x.RoleName, o => o.MapFrom(s => s.RoleName));
         }
     }
 }

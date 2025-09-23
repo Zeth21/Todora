@@ -9,5 +9,6 @@ namespace Application.Interfaces.Repositories
 {
     public interface IRoleRepository : IBaseRepository<Role>
     {
+        Task<List<Role>?> GetAllRoles();
     }
 }
