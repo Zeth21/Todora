@@ -34,6 +34,9 @@ namespace Domain.Strings
         public const string DescriptionCannotBeNull = "Description value cannot be null!";
         public const string AllHasFoundSuccessfully = "All has found successfully!";
         public const string NothingHasFound = "Nothing has found!";
-
+        public const string InvalidUser = "Invalid user!";
+        public const string InvalidRoleEnum = "Invalid role!";
+        public const string InvalidRepository = "Invalid repository!";
+        public const string CreateSuccess = "Created successfully!";
     }
 }

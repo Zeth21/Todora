@@ -9,6 +9,6 @@ namespace Application.Interfaces.Repositories
 {
     public interface IRepositoryRoleRepository : IBaseRepository<RepositoryRole>
     {
-
+        Task<RepositoryRole?> FindUserRepositoryRole(string userId, int repositoryId); 
     }
 }

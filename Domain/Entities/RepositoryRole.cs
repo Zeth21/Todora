@@ -7,6 +7,7 @@
         public int RoleId { get; set; }
         public int RepositoryId { get; set; }
         public required string UserId { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         public virtual Role Role { get; set; } = null!;
         public virtual Repository Repository { get; set; } = null!;
