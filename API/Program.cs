@@ -206,20 +206,19 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = string.Empty;
     });
 }
-//CORS
-app.UseHttpsRedirection();
+
+
 
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
-app.UseMiddleware<ResultWrapperMiddleware>();
-app.UseMiddleware<CorrelationIdMiddleware>();
-app.UseMiddleware<LoggingMiddleware>();
-//app.UseCors();
-
-// Authentication & Authorization
+app.UseHttpsRedirection();
+app.UseRouting();
+// app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseMiddleware<LoggingMiddleware>();
 
-// Controllers
+
 app.MapControllers();
 
 app.Run();

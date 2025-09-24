@@ -4,7 +4,7 @@ using Application.CQRS.Results.RepositoryResults;
 using Application.Interfaces.UnitOfWork;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Strings;
+using Domain.Values;
 using MediatR;
 using System;
 using System.Collections.Generic;

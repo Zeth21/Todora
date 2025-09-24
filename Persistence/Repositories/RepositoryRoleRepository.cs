@@ -18,7 +18,10 @@ namespace Persistence.Repositories
 
         public async Task<RepositoryRole?> FindUserRepositoryRole(string userId, int repositoryId) 
         {
-            var repositoryRole = await _context.RepositoryRoles.FirstOrDefaultAsync(x => x.UserId == userId && x.RepositoryId == repositoryId);
+            var repositoryRole = await _context.RepositoryRoles
+                .Include(x => x.Role)
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(x => x.UserId == userId && x.RepositoryId == repositoryId);
             return repositoryRole;
         }
     }

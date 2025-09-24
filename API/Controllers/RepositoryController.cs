@@ -2,7 +2,7 @@
 using Application.CQRS.Queries.RepositoryQueries;
 using Application.CQRS.Results.RepositoryResults;
 using Azure.Core;
-using Domain.Strings;
+using Domain.Values;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

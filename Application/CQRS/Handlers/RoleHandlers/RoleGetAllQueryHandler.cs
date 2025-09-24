@@ -3,7 +3,7 @@ using Application.CQRS.Results;
 using Application.CQRS.Results.RoleResults;
 using Application.Interfaces.UnitOfWork;
 using AutoMapper;
-using Domain.Strings;
+using Domain.Values;
 using MediatR;
 using System;
 using System.Collections.Generic;

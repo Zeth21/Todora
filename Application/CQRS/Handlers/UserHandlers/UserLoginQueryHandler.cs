@@ -4,7 +4,7 @@ using Application.CQRS.Results.UserResults;
 using Application.Interfaces.Data.Security;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Strings;
+using Domain.Values;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 

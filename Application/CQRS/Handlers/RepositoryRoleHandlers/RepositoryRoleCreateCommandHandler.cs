@@ -1,58 +1,52 @@
 ﻿using Application.CQRS.Commands.RepositoryRoleCommands;
 using Application.CQRS.Results;
 using Application.CQRS.Results.RepositoryRoleResults;
+using Application.Exceptions;
 using Application.Interfaces.UnitOfWork;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Strings;
+using Domain.Values;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace Application.CQRS.Handlers.RepositoryRoleHandlers
 {
     public class RepositoryRoleCreateCommandHandler : IRequestHandler<RepositoryRoleCreateCommand, Result<RepositoryRoleCreateCommandResult>>
     {
+        private readonly UserManager<User> _userManager;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public RepositoryRoleCreateCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public RepositoryRoleCreateCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, UserManager<User> userManager)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _userManager = userManager;
         }
         public async Task<Result<RepositoryRoleCreateCommandResult>> Handle(RepositoryRoleCreateCommand request, CancellationToken cancellationToken)
         {
             //CHECK USERS AUTH
+            var checkUser = await _userManager.FindByIdAsync(request.UserId);
+            if (checkUser == null)
+                return Result<RepositoryRoleCreateCommandResult>.Fail(message: StringValues.InvalidUser);
+
             var checkRepository = await _unitOfWork.Repositories.GetById(request.RepositoryId);
             if (checkRepository == null) 
-            {
                 return Result<RepositoryRoleCreateCommandResult>.Fail(message:StringValues.InvalidRepository);
-            }
+
             var checkRepositoryRole = await _unitOfWork.RepositoryRoles.FindUserRepositoryRole(request.UserId, request.RepositoryId);
-            try
-            {
-                await _unitOfWork.BeginTransactionAsync();
-                if (checkRepositoryRole != null)
-                {
-                    _unitOfWork.RepositoryRoles.DeleteById(checkRepositoryRole.RepositoryRoleId);
-                }
-                var newRecord = _mapper.Map<RepositoryRole>(request);
-                await _unitOfWork.RepositoryRoles.AddAsync(newRecord);
-                var affectedRows = await _unitOfWork.CompleteAsync();
-                if (affectedRows <= 0)
-                    throw new Exception();
-                await _unitOfWork.CommitTransactionAsync();
-                var result = _mapper.Map<RepositoryRoleCreateCommandResult>(newRecord);
-                return Result<RepositoryRoleCreateCommandResult>.Success(result, 201,StringValues.CreateSuccess);
-            }
-            catch (Exception ex) 
-            {
-                await _unitOfWork.RollbackTransactionAsync();
-                return Result<RepositoryRoleCreateCommandResult>.Exception(ex.Message);
-            }
+            if (checkRepositoryRole is not null)
+                return Result<RepositoryRoleCreateCommandResult>.Fail(message: StringValues.CreateFailHasRecord);
+
+            var newRecord = _mapper.Map<RepositoryRole>(request);
+            await _unitOfWork.RepositoryRoles.AddAsync(newRecord);
+            var affectedRows = await _unitOfWork.CompleteAsync();
+
+            if (affectedRows <= 0)
+                throw new SaveDataException(StringValues.SaveFail, new Exception());
+
+            var record = await _unitOfWork.RepositoryRoles.FindUserRepositoryRole(request.UserId, request.RepositoryId);
+            var result = _mapper.Map<RepositoryRoleCreateCommandResult>(record);
+            return Result<RepositoryRoleCreateCommandResult>.Success(data:result,IntegerValues.Created,message:StringValues.CreateSuccess);
         }
     }
 }

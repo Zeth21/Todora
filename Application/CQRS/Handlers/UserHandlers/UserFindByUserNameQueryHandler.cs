@@ -3,7 +3,7 @@ using Application.CQRS.Results;
 using Application.CQRS.Results.UserResults;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Strings;
+using Domain.Values;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System;

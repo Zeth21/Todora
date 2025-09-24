@@ -1,5 +1,5 @@
 ﻿using Application.CQRS.Commands.RepositoryRoleCommands;
-using Domain.Strings;
+using Domain.Values;
 using FluentValidation;
 using System;
 using System.Collections.Generic;

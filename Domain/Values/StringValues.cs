@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Strings
+namespace Domain.Values
 {
     public static class StringValues
     {
@@ -27,7 +27,7 @@ namespace Domain.Strings
 
         //API Response Values
         public const string Unauthorized = "Unauthorized!";
-
+        public const string InternalServerError = "Internal server error!";
         //Common Values
         public const string NameCannotBeNull = "Name value cannot be null!";
         public const string TitleCannotBeNull = "Title value cannot be null!";
@@ -38,5 +38,9 @@ namespace Domain.Strings
         public const string InvalidRoleEnum = "Invalid role!";
         public const string InvalidRepository = "Invalid repository!";
         public const string CreateSuccess = "Created successfully!";
+        public const string CreateFailHasRecord = "Already recorded!";
+        public const string SaveFail = "Could'nt save the data!";
+        public const string ValidationError = "One or more validation errors occured!";
+
     }
 }

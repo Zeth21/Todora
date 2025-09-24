@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces.Repositories;
 using Domain.Entities;
+using Domain.Enum;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,12 @@ namespace Persistence.Repositories
         {
             var roles = await _context.Rolles.AsNoTracking().ToListAsync();
             return roles;
+        }
+
+        public async Task<Role?> GetRoleByValue(RoleValues roleValue)
+        {
+            var role = await _context.Rolles.FirstOrDefaultAsync(x => x.RoleName == roleValue);
+            return role;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace Application.Interfaces.Repositories
     public interface IRoleRepository : IBaseRepository<Role>
     {
         Task<List<Role>?> GetAllRoles();
+        Task<Role?> GetRoleByValue(RoleValues roleValue);
     }
 }
