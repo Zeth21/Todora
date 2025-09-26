@@ -20,6 +20,7 @@ namespace Persistence
         public DbSet<WorkTask> Tasks { get; set; }
         public DbSet<TaskOwning> TaskOwnings { get; set; }
         public DbSet<TaskStage> TaskStages { get; set; }
+        public DbSet<StageNote> StageNotes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
