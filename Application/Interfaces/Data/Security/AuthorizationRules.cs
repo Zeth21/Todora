@@ -1,11 +1,10 @@
-﻿using Application.Authorization;
-using Application.Interfaces.Data.Security;
+﻿using Application.Interfaces.Data.Security;
 using Domain.Entities;
 using Domain.Enum;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 
-namespace Application.Services.Security
+namespace Application.Interfaces.Data.Security
 {
     public class AuthorizationRuleService : IAuthorizationRules
     {

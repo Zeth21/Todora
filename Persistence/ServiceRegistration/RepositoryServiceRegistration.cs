@@ -13,7 +13,7 @@ namespace Persistence.ServiceRegistration
 
             services.AddDbContext<ApplicationDbContext>();
             services.AddTransient<IJWTGenerator, JWTGenerator>();
-            services.AddSingleton<IRepositoryContextResolver, RepositoryContextResolver>();
+            services.AddScoped<IRepositoryContextResolver, RepositoryContextResolver>();
 
             //services.AddScoped<INotificationRepository, NotificationRepository>();
             //services.AddScoped<IRepositoryRepository, RepositoryRepository>();

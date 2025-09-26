@@ -1,18 +1,10 @@
-﻿using Application.Interfaces.Data.Security;
-using Application.Interfaces.UnitOfWork;
-using Domain.Enum;
+﻿using Application.Interfaces.UnitOfWork;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
-namespace Application.Authorization
+namespace Application.Interfaces.Data.Security
 {
-    /// <summary>
-    /// Herhangi bir kaynak (TResource) için yetki kontrolü yapan jenerik handler.
-    /// Görevi, yetki için gerekli bağlamı (context) toplayıp kararı IAuthorizationRuleService'e sormaktır.
-    /// </summary>
     public class ResourceAuthorization<TResource> : AuthorizationHandler<ProjectOperationRequirement, TResource>
     {
         private readonly IUnitOfWork _unitOfWork;

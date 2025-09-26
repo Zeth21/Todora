@@ -1,10 +1,13 @@
 using API.Middlewares;
+using Application;
 using Application.CQRS.Results;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using Persistence;
+using Persistence.Data.Security;
 using Persistence.Seed;
 using Persistence.ServiceRegistration;
 using Serilog;
@@ -13,7 +16,6 @@ using Serilog.Sinks.MSSqlServer;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Text.Json;
-using Application;
 var builder = WebApplication.CreateBuilder(args);
 
 //var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -50,11 +52,11 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // ===================== Services =====================
-builder.Services.AddPersistenceServices();
-builder.Services.AddApplicationServices();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddApplicationServices();
+builder.Services.AddPersistenceServices();
 
 // ===================== Identity Configuration =====================
 builder.Services.AddIdentity<User, IdentityRole>(options =>
@@ -176,6 +178,9 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+
+
 
 var app = builder.Build();
 
