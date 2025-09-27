@@ -18,9 +18,9 @@ namespace API.Controllers
             _mediator = mediator;
         }
 
-        [Authorize(Roles =("Admin,User"))]
+        [Authorize(Roles = ("Admin,User"))]
         [HttpPost("create")]
-        public async Task<IActionResult> CreateRepositoryRole([FromBody] RepositoryRoleCreateCommand request, CancellationToken cancellationToken = default) 
+        public async Task<IActionResult> CreateRepositoryRole([FromBody] RepositoryRoleCreateCommand request, CancellationToken cancellationToken = default)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
@@ -28,6 +28,18 @@ namespace API.Controllers
                 return Unauthorized(StringValues.Unauthorized);
             }
             request.AuthorizedPersonId = userId;
+            var result = await _mediator.Send(request, cancellationToken);
+            if (result.IsSucceeded)
+            {
+                return Ok(result.Data);
+            }
+            return StatusCode(result.StatusCode, result);
+        }
+
+        [Authorize(Roles = "Admin,User")]
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateRepositoryRole([FromBody] RepositoryRoleUpdateCommand request, CancellationToken cancellationToken = default) 
+        {
             var result = await _mediator.Send(request, cancellationToken);
             if (result.IsSucceeded)
             {

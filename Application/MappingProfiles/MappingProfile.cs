@@ -46,6 +46,13 @@ namespace Application.MappingProfiles
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedDate));
 
+            CreateMap<RepositoryRole, RepositoryRoleUpdateCommandResult>()
+                .ForMember(dest => dest.UserRepositoryRole, opt => opt.MapFrom(src => src.Role.RoleName))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.User.Name))
+                .ForMember(dest => dest.Surname, opt => opt.MapFrom(src => src.User.Surname))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedDate));
+
         }
     }
 }

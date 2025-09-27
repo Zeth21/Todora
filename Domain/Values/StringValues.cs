@@ -41,6 +41,7 @@ namespace Domain.Values
         public const string CreateFailHasRecord = "Already recorded!";
         public const string SaveFail = "Could'nt save the data!";
         public const string ValidationError = "One or more validation errors occured!";
+        public const string InvalidFail = "Invalid values!";
 
     }
 }
