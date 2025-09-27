@@ -60,7 +60,7 @@ namespace Persistence
                 entity.HasMany(u => u.Notifications)
                       .WithOne(n => n.User)
                       .HasForeignKey(n => n.UserId)
-                      .OnDelete(DeleteBehavior.NoAction);
+                      .OnDelete(DeleteBehavior.Cascade);
 
 
                 //Building relationships with StageNotes
@@ -84,7 +84,7 @@ namespace Persistence
                 entity.HasOne(u => u.User)
                 .WithMany(u => u.Notifications)
                 .HasForeignKey(n => n.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
                 //Setting maxlength for title property
                 entity.Property(n => n.NotificationTitle)
@@ -114,13 +114,13 @@ namespace Persistence
                 entity.HasMany(r => r.Tasks)
                 .WithOne(t => t.Repository)
                 .HasForeignKey(t => t.RepositoryId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
                 //Building relationships with RepositoryRoles
                 entity.HasMany(r => r.RepositoryRoles)
                 .WithOne(t => t.Repository)
-                .HasForeignKey(t => t.RepositoryRoleId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey(t => t.RepositoryId)
+                .OnDelete(DeleteBehavior.Cascade);
 
                 entity.Property(n => n.RepositoryCreateDate)
                 .HasColumnType("datetime2(0)");
@@ -150,19 +150,19 @@ namespace Persistence
                 entity.HasOne(rp => rp.User)
                 .WithMany(u => u.RepositoryRoles)
                 .HasForeignKey(rp => rp.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
                 //Building relationshipts with Role
                 entity.HasOne(rp => rp.Role)
                 .WithMany(r => r.RepositoryRoles)
                 .HasForeignKey(rp => rp.RoleId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
-                //Building relationshipts with Role
+                //Building relationshipts with Repository
                 entity.HasOne(rp => rp.Repository)
                 .WithMany(r => r.RepositoryRoles)
                 .HasForeignKey(rp => rp.RepositoryId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasIndex(rp => new { rp.RepositoryId, rp.UserId })
                 .IsUnique();
@@ -182,7 +182,7 @@ namespace Persistence
                 entity.HasMany(r => r.RepositoryRoles)
                 .WithOne(rp => rp.Role)
                 .HasForeignKey(rp => rp.RoleId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
                 //Setting maxlength for name property
                 entity.Property(r => r.RoleName)
@@ -204,11 +204,11 @@ namespace Persistence
                 entity.Property(s => s.StageId)
                 .ValueGeneratedOnAdd();
 
-                //Building relationshipts with RepositoryRoles
+                //Building relationshipts with TaskStages
                 entity.HasMany(s => s.TaskStages)
                 .WithOne(ts => ts.Stage)
                 .HasForeignKey(ts => ts.StageId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
                 //Setting maxlength for name property
                 entity.Property(s => s.StageName)
@@ -240,13 +240,13 @@ namespace Persistence
                 entity.HasOne(t => t.Repository)
                 .WithMany(s => s.Tasks)
                 .HasForeignKey(t => t.RepositoryId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
                 //Building relationships with TaskStages
                 entity.HasMany(t => t.TaskStages)
                 .WithOne(s => s.Task)
                 .HasForeignKey(t => t.TaskId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
                 // The title value must be unique within its repository
                 entity.HasIndex(t => new {t.RepositoryId, t.TaskTitle})
@@ -326,19 +326,19 @@ namespace Persistence
                 entity.HasOne(ts => ts.Task)
                 .WithMany(t => t.TaskStages)
                 .HasForeignKey(ts => ts.TaskId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
                 //Building relationship with Stage
                 entity.HasOne(ts => ts.Stage)
                 .WithMany(s => s.TaskStages)
                 .HasForeignKey(ts => ts.StageId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
                 //Building relationships with StageNotes
                 entity.HasMany(ts => ts.StageNotes)
                 .WithOne(sn => sn.TaskStage)
                 .HasForeignKey(sn => sn.TaskStageId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
                 entity.Property(n => n.TaskStageDate)
                 .HasColumnType("datetime2(0)");
@@ -364,7 +364,7 @@ namespace Persistence
                 entity.HasOne(sn => sn.TaskStage)
                 .WithMany(ts => ts.StageNotes)
                 .HasForeignKey(sn => sn.TaskStageId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
                 entity.Property(sn => sn.StageNoteText)
                 .HasMaxLength(200)

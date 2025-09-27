@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250920215719_UserEntityUpdate")]
-    partial class UserEntityUpdate
+    [Migration("20250927001546_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -87,6 +87,10 @@ namespace Persistence.Migrations
                         .HasMaxLength(75)
                         .HasColumnType("nvarchar(75)");
 
+                    b.Property<string>("RepositoryUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("RepositoryId");
 
                     b.ToTable("Repositories");
@@ -99,6 +103,9 @@ namespace Persistence.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RepositoryRoleId"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("RepositoryId")
                         .HasColumnType("int");
@@ -130,10 +137,9 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"));
 
-                    b.Property<string>("RoleName")
-                        .IsRequired()
+                    b.Property<int>("RoleName")
                         .HasMaxLength(75)
-                        .HasColumnType("nvarchar(75)");
+                        .HasColumnType("int");
 
                     b.HasKey("RoleId");
 
@@ -193,7 +199,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("StageNote");
+                    b.ToTable("StageNotes");
                 });
 
             modelBuilder.Entity("Domain.Entities.TaskOwning", b =>
@@ -536,7 +542,7 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany("Notifications")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -547,19 +553,19 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.Repository", "Repository")
                         .WithMany("RepositoryRoles")
                         .HasForeignKey("RepositoryId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Role", "Role")
                         .WithMany("RepositoryRoles")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany("RepositoryRoles")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Repository");
@@ -574,7 +580,7 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.TaskStage", "TaskStage")
                         .WithMany("StageNotes")
                         .HasForeignKey("TaskStageId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.User", "User")
@@ -612,13 +618,13 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.Stage", "Stage")
                         .WithMany("TaskStages")
                         .HasForeignKey("StageId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.WorkTask", "Task")
                         .WithMany("TaskStages")
                         .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.User", "User")
@@ -639,7 +645,7 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entities.Repository", "Repository")
                         .WithMany("Tasks")
                         .HasForeignKey("RepositoryId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.User", "User")
