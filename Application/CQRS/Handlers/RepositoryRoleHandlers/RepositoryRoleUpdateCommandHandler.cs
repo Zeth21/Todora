@@ -61,7 +61,7 @@ namespace Application.CQRS.Handlers.RepositoryRoleHandlers
             var record = await _unitOfWork.RepositoryRoles.FindUserRepositoryRole(checkRole.UserId, checkRole.RepositoryId);
             var result = _mapper.Map<RepositoryRoleUpdateCommandResult>(record);
 
-            return Result<RepositoryRoleUpdateCommandResult>.Success(result,200,StringValues.CreateSuccess);
+            return Result<RepositoryRoleUpdateCommandResult>.Success(result,IntegerValues.Ok,StringValues.CreateSuccess);
         }
     }
 }
