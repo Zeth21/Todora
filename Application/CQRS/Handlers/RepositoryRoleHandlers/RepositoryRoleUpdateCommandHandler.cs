@@ -41,20 +41,26 @@ namespace Application.CQRS.Handlers.RepositoryRoleHandlers
         {
 
             var checkRole = await _unitOfWork.RepositoryRoles.GetById(request.RepositoryRoleId);
+
             if (checkRole == null)
                 return Result<RepositoryRoleUpdateCommandResult>.Fail(StringValues.InvalidFail);
+
+            if (checkRole.RepositoryRoleId == (int)request.RoleValue)
+                return Result<RepositoryRoleUpdateCommandResult>.Fail(StringValues.CreateFailHasRecord);
 
             var authUser = _contextAccessor.HttpContext.User;
             var isUserAuthorized = await _authorizationService.AuthorizeAsync(
                 authUser,
                 checkRole,
                 Operations.Update);
+
             if (!isUserAuthorized.Succeeded)
                 return Result<RepositoryRoleUpdateCommandResult>.Unauthorized();
 
             checkRole.RoleId = (int)request.RoleValue;
             await _unitOfWork.RepositoryRoles.UpdateAsync(checkRole);
             var affectedRows = await _unitOfWork.CompleteAsync();
+
             if (affectedRows <= 0)
                 throw new SaveDataException(StringValues.SaveFail, new Exception());
 
