@@ -8,11 +8,6 @@ using Domain.Entities;
 using Domain.Enum;
 using Domain.Values;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.CQRS.Handlers.RepositoryHandlers
 {
@@ -30,28 +25,18 @@ namespace Application.CQRS.Handlers.RepositoryHandlers
             var checkTitle = await _unitOfWork.Repositories.GetUserRepositoryByTitleAsync(request.UserId, request.RepositoryTitle);
             if (checkTitle != null)
                 return Result<RepositoryCreateCommandResult>.Fail(StringValues.RepositoryCreateFailTitleSame);
-            try
+            var newRepository = _mapper.Map<Repository>(request);
+            newRepository.RepositoryRoles = new List<RepositoryRole>
             {
-                await _unitOfWork.BeginTransactionAsync();
-                var newRepository = _mapper.Map<Repository>(request);
-                newRepository.RepositoryRoles = new List<RepositoryRole>
-                {
-                    new RepositoryRole { UserId = request.UserId, RoleId = (int)RoleValues.Owner }
-                };
-                await _unitOfWork.Repositories.AddAsync(newRepository);
+                new RepositoryRole { UserId = request.UserId, RoleId = (int)RoleValues.Owner }
+            };
+            await _unitOfWork.Repositories.AddAsync(newRepository);
 
-                var affectedRows = await _unitOfWork.CompleteAsync();
-                if (affectedRows < 2)
-                    throw new SaveDataException(StringValues.SaveFail, new Exception());
-                await _unitOfWork.CommitTransactionAsync();
-                var result = _mapper.Map<RepositoryCreateCommandResult>(newRepository);
-                return Result<RepositoryCreateCommandResult>.Success(data: result, message: StringValues.RepositoryCreateSuccess);
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackTransactionAsync();
-                throw;
-            }
+            var affectedRows = await _unitOfWork.CompleteAsync();
+            if (affectedRows < 2)
+                throw new SaveDataException(StringValues.SaveFail, new Exception());
+            var result = _mapper.Map<RepositoryCreateCommandResult>(newRepository);
+            return Result<RepositoryCreateCommandResult>.Success(data: result, message: StringValues.RepositoryCreateSuccess);
         }
     }
 }
