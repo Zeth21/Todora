@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Domain.Values;
 using AutoMapper;
-using Application.Interfaces.UnitOfWork;
 
 namespace Application.CQRS.Handlers.UserHandlers
 {
@@ -35,7 +34,7 @@ namespace Application.CQRS.Handlers.UserHandlers
             var addToRoleResult = await _userManager.AddToRoleAsync(newUser, StringValues.UserRole);
             if (!createResult.Succeeded || !addToRoleResult.Succeeded)
                 throw new Exception();
-            return Result<object>.Success(data:null,message:StringValues.CreateUserSuccess);
+            return Result<object>.Success(data:null,statusCode:IntegerValues.Created,message:StringValues.CreateUserSuccess);
         }
     }
 }
