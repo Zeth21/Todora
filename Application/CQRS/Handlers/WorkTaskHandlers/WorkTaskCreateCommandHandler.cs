@@ -22,20 +22,17 @@ namespace Application.CQRS.Handlers.WorkTaskHandlers
     public class WorkTaskCreateCommandHandler : IRequestHandler<WorkTaskCreateCommand, Result<WorkTaskCreateCommandResult>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly IAuthorizationService _authorizationService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public WorkTaskCreateCommandHandler(
             IUnitOfWork unitOfWork,
-            UserManager<User> userManager,
             IMapper mapper,
             IAuthorizationService authorizationService,
             IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
-            _userManager = userManager;
             _mapper = mapper;
             _authorizationService = authorizationService;
             _httpContextAccessor = httpContextAccessor;
@@ -47,7 +44,7 @@ namespace Application.CQRS.Handlers.WorkTaskHandlers
             if (checkRepository == null)
                 return Result<WorkTaskCreateCommandResult>.Fail(StringValues.InvalidRepository);
 
-            var titleHasTaken = await _unitOfWork.WorkTasks.CheckTitleIsValid(request.RepositoryId, request.TaskTitle);
+            var titleHasTaken = await _unitOfWork.WorkTasks.CheckTitleIsValid(checkRepository.RepositoryId, request.TaskTitle);
             if(titleHasTaken)
                 return Result<WorkTaskCreateCommandResult>.Fail(StringValues.InvalidTitleSame);
 
