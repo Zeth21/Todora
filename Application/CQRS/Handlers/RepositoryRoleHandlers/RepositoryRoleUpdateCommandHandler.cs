@@ -45,7 +45,7 @@ namespace Application.CQRS.Handlers.RepositoryRoleHandlers
             if (checkRole == null)
                 return Result<RepositoryRoleUpdateCommandResult>.Fail(StringValues.InvalidFail);
 
-            if (checkRole.RepositoryRoleId == (int)request.RoleValue)
+            if (checkRole.RoleId == (int)request.RoleValue)
                 return Result<RepositoryRoleUpdateCommandResult>.Fail(StringValues.CreateFailHasRecord);
 
             var authUser = _contextAccessor.HttpContext.User;

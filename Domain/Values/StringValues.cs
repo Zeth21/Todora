@@ -21,8 +21,6 @@ namespace Domain.Values
 
         //Repository Values
         public const string RepositoryCreateFailTitleSame = "You already have another repository with same name!";
-        public const string RepositoryCreateFailTitleLength = "Repository title cannot exceed 75 characters!";
-        public const string RepositoryCreateFailDescriptionLength = "Repository title cannot exceed 200 characters!";
         public const string RepositoryCreateSuccess = "Repository has created successfully!";
 
         //API Response Values
@@ -42,6 +40,8 @@ namespace Domain.Values
         public const string SaveFail = "Could'nt save the data!";
         public const string ValidationError = "One or more validation errors occured!";
         public const string InvalidFail = "Invalid values!";
-
+        public const string InvalidTitleLength75 = "Title cannot exceed 75 characters!";
+        public const string InvalidDescriptionLength75 = "Description cannot exceed 75 characters!";
+        public const string InvalidTitleSame = "There is already another record that has same title!";
     }
 }

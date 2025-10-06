@@ -1,10 +1,12 @@
 ﻿using Application.CQRS.Commands.RepositoryCommands;
 using Application.CQRS.Commands.RepositoryRoleCommands;
 using Application.CQRS.Commands.UserCommands;
+using Application.CQRS.Commands.WorkTaskCommands;
 using Application.CQRS.Results.RepositoryResults;
 using Application.CQRS.Results.RepositoryRoleResults;
 using Application.CQRS.Results.RoleResults;
 using Application.CQRS.Results.UserResults;
+using Application.CQRS.Results.WorkTaskResults;
 using AutoMapper;
 using Domain.Entities;
 
@@ -53,6 +55,10 @@ namespace Application.MappingProfiles
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedDate));
 
+            CreateMap<WorkTaskCreateCommand, WorkTask>();
+
+            CreateMap<WorkTask, WorkTaskCreateCommandResult>()
+                .ForMember(dest => dest.TaskCreatedUserName, opt => opt.MapFrom(src => src.User.UserName));
         }
     }
 }

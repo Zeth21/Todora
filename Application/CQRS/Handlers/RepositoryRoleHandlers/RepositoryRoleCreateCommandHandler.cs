@@ -44,10 +44,12 @@ namespace Application.CQRS.Handlers.RepositoryRoleHandlers
             if (checkRepository == null)
                 return Result<RepositoryRoleCreateCommandResult>.Fail(message: StringValues.InvalidRepository);
 
+            var policyResource = _mapper.Map<RepositoryRole>(request);
+
             var authUser = _httpContextAccessor.HttpContext.User;
             var authorizationResult = await _authorizationService.AuthorizeAsync(
                 authUser,           
-                checkRepository,    
+                policyResource,    
                 Operations.Create  
             );
 
