@@ -8,6 +8,7 @@
         public int RepositoryId { get; set; }
         public required string UserId { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public bool RepositoryRoleIsDeleted { get; set; } = false;
 
         public virtual Role Role { get; set; } = null!;
         public virtual Repository Repository { get; set; } = null!;

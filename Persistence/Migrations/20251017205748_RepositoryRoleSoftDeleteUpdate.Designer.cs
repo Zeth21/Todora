@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251017205748_RepositoryRoleSoftDeleteUpdate")]
+    partial class RepositoryRoleSoftDeleteUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,10 +73,6 @@ namespace Persistence.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
-
-                    b.Property<string>("PhotoPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("RepositoryCreateDate")
                         .HasColumnType("datetime2(0)");
@@ -204,28 +203,6 @@ namespace Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("StageNotes");
-                });
-
-            modelBuilder.Entity("Domain.Entities.StageNotePhotos", b =>
-                {
-                    b.Property<int>("PhotoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PhotoId"));
-
-                    b.Property<string>("PhotoPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StageNoteId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PhotoId");
-
-                    b.HasIndex("StageNoteId");
-
-                    b.ToTable("StageNotePhotos");
                 });
 
             modelBuilder.Entity("Domain.Entities.TaskOwning", b =>
@@ -395,9 +372,6 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("TaskCurrentStageId")
-                        .HasColumnType("int");
-
                     b.Property<string>("TaskDescription")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -412,7 +386,7 @@ namespace Persistence.Migrations
                     b.Property<bool>("TaskIsRemoved")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("TaskRoleId")
+                    b.Property<int>("TaskRole")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("TaskStartDate")
@@ -426,10 +400,6 @@ namespace Persistence.Migrations
                     b.HasKey("TaskId");
 
                     b.HasIndex("TaskCreatedUserId");
-
-                    b.HasIndex("TaskCurrentStageId");
-
-                    b.HasIndex("TaskRoleId");
 
                     b.HasIndex("RepositoryId", "TaskTitle")
                         .IsUnique();
@@ -627,17 +597,6 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.StageNotePhotos", b =>
-                {
-                    b.HasOne("Domain.Entities.StageNote", "StageNote")
-                        .WithMany("StageNotePhotos")
-                        .HasForeignKey("StageNoteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("StageNote");
-                });
-
             modelBuilder.Entity("Domain.Entities.TaskOwning", b =>
                 {
                     b.HasOne("Domain.Entities.WorkTask", "Task")
@@ -698,21 +657,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.TaskStage", "CurrentTaskStage")
-                        .WithMany()
-                        .HasForeignKey("TaskCurrentStageId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("Domain.Entities.Role", "Role")
-                        .WithMany("WorkTasks")
-                        .HasForeignKey("TaskRoleId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("CurrentTaskStage");
-
                     b.Navigation("Repository");
-
-                    b.Navigation("Role");
 
                     b.Navigation("User");
                 });
@@ -778,18 +723,11 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Role", b =>
                 {
                     b.Navigation("RepositoryRoles");
-
-                    b.Navigation("WorkTasks");
                 });
 
             modelBuilder.Entity("Domain.Entities.Stage", b =>
                 {
                     b.Navigation("TaskStages");
-                });
-
-            modelBuilder.Entity("Domain.Entities.StageNote", b =>
-                {
-                    b.Navigation("StageNotePhotos");
                 });
 
             modelBuilder.Entity("Domain.Entities.TaskStage", b =>

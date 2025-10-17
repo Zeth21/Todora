@@ -13,11 +13,15 @@ namespace Domain.Entities
         public DateTime TaskCreateDate { get; set; } = DateTime.UtcNow;
         public DateTime? TaskStartDate { get; set; }
         public DateTime? TaskEndDate { get; set; }
-        public TaskRole TaskRole { get; set; } = 0;
+        public int? TaskRoleId { get; set; }
         public bool TaskIsCompleted { get; set; } = false;
         public bool TaskIsRemoved { get; set; } = false;
+        public int? TaskCurrentStageId { get; set; }
+
 
         public virtual User User { get; set; } = null!;
+        public virtual Role? Role { get; set; }
+        public virtual TaskStage? CurrentTaskStage { get; set; }
         public virtual Repository Repository { get; set; } = null!;
         public ICollection<TaskStage> TaskStages { get; set; } = new List<TaskStage>();
         public ICollection<TaskOwning> TaskOwnings { get; set; } = new List<TaskOwning>();

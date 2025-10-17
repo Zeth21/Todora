@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.CQRS.Results
 {
-    public class Result<T>
+    public class Result<T> where T : class
     {
         public bool IsSucceeded { get; set; }
         public string? Message { get; set; }

@@ -9,6 +9,6 @@ namespace Application.Interfaces.Repositories
 {
     public interface IWorkTaskRepository : IBaseRepository<WorkTask>
     {
-        public Task<bool> CheckTitleIsValid(int repositoryId, string title); 
+        public Task<bool> CheckTitleIsValid(int repositoryId, string title);
     }
 }

@@ -10,5 +10,6 @@
 
         public virtual TaskStage TaskStage { get; set; } = null!;
         public virtual User User { get; set; } = null!;
+        public ICollection<StageNotePhotos> StageNotePhotos { get; set; } = new List<StageNotePhotos>();
     }
 }

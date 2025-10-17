@@ -21,6 +21,7 @@ namespace Persistence
         public DbSet<TaskOwning> TaskOwnings { get; set; }
         public DbSet<TaskStage> TaskStages { get; set; }
         public DbSet<StageNote> StageNotes { get; set; }
+        public DbSet<StageNotePhotos> StageNotePhotos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -71,7 +72,7 @@ namespace Persistence
             });
 
             //NOTIFICATION SETTINGS
-            builder.Entity<Notification>(entity => 
+            builder.Entity<Notification>(entity =>
             {
                 //Setting primary key
                 entity.HasKey(n => n.NotificationId);
@@ -101,7 +102,7 @@ namespace Persistence
             });
 
             //REPOSITORY SETTINGS
-            builder.Entity<Repository>(entity => 
+            builder.Entity<Repository>(entity =>
             {
                 //Setting primary key
                 entity.HasKey(r => r.RepositoryId);
@@ -137,7 +138,7 @@ namespace Persistence
             });
 
             //REPOSITORYROLE SETTINGS
-            builder.Entity<RepositoryRole>(entity => 
+            builder.Entity<RepositoryRole>(entity =>
             {
                 //Setting primary key
                 entity.HasKey(rp => rp.RepositoryRoleId);
@@ -164,12 +165,15 @@ namespace Persistence
                 .HasForeignKey(rp => rp.RepositoryId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+                entity.Property(rp => rp.RepositoryRoleIsDeleted)
+                .IsRequired();
+
                 entity.HasIndex(rp => new { rp.RepositoryId, rp.UserId })
                 .IsUnique();
             });
 
             //ROLE SETTINGS
-            builder.Entity<Role>(entity => 
+            builder.Entity<Role>(entity =>
             {
                 //Setting primary key
                 entity.HasKey(r => r.RoleId);
@@ -221,7 +225,7 @@ namespace Persistence
             });
 
             //TASK SETTINGS
-            builder.Entity<Domain.Entities.WorkTask>(entity => 
+            builder.Entity<Domain.Entities.WorkTask>(entity =>
             {
                 //Setting primary key
                 entity.HasKey(t => t.TaskId);
@@ -248,6 +252,17 @@ namespace Persistence
                 .HasForeignKey(t => t.TaskId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+                entity.HasOne(t => t.CurrentTaskStage)
+                .WithMany()
+                .HasForeignKey(t => t.TaskCurrentStageId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+                //Building relationships with Role
+                entity.HasOne(t => t.Role)
+                .WithMany(r => r.WorkTasks)
+                .HasForeignKey(t => t.TaskRoleId)
+                .OnDelete(DeleteBehavior.NoAction);
+
                 // The title value must be unique within its repository
                 entity.HasIndex(t => new {t.RepositoryId, t.TaskTitle})
                 .IsUnique();
@@ -266,14 +281,14 @@ namespace Persistence
                 .HasColumnType("datetime2(0)");
 
                 entity.Property(n => n.TaskStartDate)
-                .HasColumnType("datetime2(0)"); 
+                .HasColumnType("datetime2(0)");
 
                 entity.Property(n => n.TaskEndDate)
                 .HasColumnType("datetime2(0)");
             });
 
             //TASKOWNING SETTINGS
-            builder.Entity<TaskOwning>(entity => 
+            builder.Entity<TaskOwning>(entity =>
             {
                 //Setting primary key
                 entity.HasKey(to => to.TaskOwningId);
@@ -307,7 +322,7 @@ namespace Persistence
             });
 
             //TASKSTAGE SETTINGS
-            builder.Entity<TaskStage>(entity => 
+            builder.Entity<TaskStage>(entity =>
             {
                 //Setting primary key
                 entity.HasKey(ts => ts.TaskStageId);
@@ -328,6 +343,8 @@ namespace Persistence
                 .HasForeignKey(ts => ts.TaskId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+                //
+
                 //Building relationship with Stage
                 entity.HasOne(ts => ts.Stage)
                 .WithMany(s => s.TaskStages)
@@ -345,7 +362,7 @@ namespace Persistence
             });
 
             //STAGENOTE SETTINGS
-            builder.Entity<StageNote>(entity => 
+            builder.Entity<StageNote>(entity =>
             {
                 //Setting primary key
                 entity.HasKey(sn => sn.StageNoteId);
@@ -372,6 +389,21 @@ namespace Persistence
 
                 entity.Property(n => n.StageNoteDate)
                 .HasColumnType("datetime2(0)");
+            });
+
+            //STAGENOTEPHOTOS SETTINGS
+            builder.Entity<StageNotePhotos>(snp => 
+            {
+                snp.HasKey(snp => snp.PhotoId);
+
+                snp.Property(snp => snp.PhotoId)
+                .ValueGeneratedOnAdd();
+
+                //Building relationship with StageNote
+                snp.HasOne(snp => snp.StageNote)
+                .WithMany(sn => sn.StageNotePhotos)
+                .HasForeignKey(snp => snp.StageNoteId)
+                .OnDelete(DeleteBehavior.Cascade);
             });
         }
 

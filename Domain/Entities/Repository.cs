@@ -4,6 +4,7 @@
     public class Repository
     {
         public int RepositoryId { get; set; }
+        public string PhotoPath { get; set; } = "default-repo.png";
         public required string RepositoryTitle { get; set; }
         public required string RepositoryDescription { get; set; }
         public bool IsDeleted { get; set; } = false;

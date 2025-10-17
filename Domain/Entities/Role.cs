@@ -10,5 +10,6 @@ namespace Domain.Entities
         public RoleValues RoleName { get; set; }
 
         public ICollection<RepositoryRole> RepositoryRoles { get; set; } = new List<RepositoryRole>();
+        public ICollection<WorkTask> WorkTasks { get; set; } = new List<WorkTask>();
     }
 }

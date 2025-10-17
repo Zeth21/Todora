@@ -30,14 +30,14 @@ namespace Application
         {
             var authorizableTypes = new[]
             {
-            typeof(WorkTask),
-            typeof(Stage),
-            typeof(RepositoryRole),
-            typeof(TaskOwning),
-            typeof(TaskStage),
-            typeof(Repository),
-            typeof(StageNote) 
-        };
+                typeof(WorkTask),
+                typeof(Stage),
+                typeof(RepositoryRole),
+                typeof(TaskOwning),
+                typeof(TaskStage),
+                typeof(Repository),
+                typeof(StageNote)
+            };
 
             foreach (var type in authorizableTypes)
             {
