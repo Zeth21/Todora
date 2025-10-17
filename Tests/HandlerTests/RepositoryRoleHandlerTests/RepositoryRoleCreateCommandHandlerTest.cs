@@ -55,14 +55,17 @@ namespace Application.Tests.RepositoryRoleHandlerTests
         {
             var command = new RepositoryRoleCreateCommand { UserId = "user-to-assign", RepositoryId = 1, RoleName = RoleValues.Manager };
             var userToAssign = new User { Id = "user-to-assign", UserName = "testuser" };
+            var role = new RepositoryRole { UserId = "user-to-assign" };
             var repository = new Repository { RepositoryId = 1, RepositoryDescription = "MockTest", RepositoryTitle = "MockTest", RepositoryUserId = "user-to-assign" };
 
             _mockUserManager.Setup(um => um.FindByIdAsync(command.UserId)).ReturnsAsync(userToAssign);
             _mockUnitOfWork.Setup(uow => uow.Repositories.GetById(command.RepositoryId)).ReturnsAsync(repository);
 
+            _mockMapper.Setup(mm => mm.Map<RepositoryRole>(command)).Returns(role);
+
             _mockAuthService.Setup(auth => auth.AuthorizeAsync(
                 It.IsAny<ClaimsPrincipal>(),
-                repository,
+                role,
                 It.IsAny<IEnumerable<IAuthorizationRequirement>>()))
                         .ReturnsAsync(AuthorizationResult.Success());
 
@@ -86,14 +89,17 @@ namespace Application.Tests.RepositoryRoleHandlerTests
         {
             var command = new RepositoryRoleCreateCommand { UserId = "user-to-assign", RepositoryId = 1, RoleName = RoleValues.Manager };
             var userToAssign = new User { Id = "user-to-assign" };
+            var role = new RepositoryRole { UserId = "user-to-assign" };
             var repository = new Repository { RepositoryId = 1, RepositoryDescription = "MockTest", RepositoryTitle = "MockTest", RepositoryUserId = "user-to-assign" };
 
             _mockUserManager.Setup(um => um.FindByIdAsync(command.UserId)).ReturnsAsync(userToAssign);
             _mockUnitOfWork.Setup(uow => uow.Repositories.GetById(command.RepositoryId)).ReturnsAsync(repository);
 
+            _mockMapper.Setup(mm => mm.Map<RepositoryRole>(command)).Returns(role);
+
             _mockAuthService.Setup(auth => auth.AuthorizeAsync(
                 It.IsAny<ClaimsPrincipal>(),
-                repository,
+                role,
                 It.IsAny<IEnumerable<IAuthorizationRequirement>>())) 
                         .ReturnsAsync(AuthorizationResult.Failed());
 
@@ -110,14 +116,18 @@ namespace Application.Tests.RepositoryRoleHandlerTests
         {
             var command = new RepositoryRoleCreateCommand { UserId = "user-to-assign", RepositoryId = 1, RoleName = RoleValues.Manager };
             var userToAssign = new User { Id = "user-to-assign" };
+            var role = new RepositoryRole { UserId = "user-to-assign" };
             var repository = new Repository { RepositoryId = 1, RepositoryDescription = "MockTest", RepositoryTitle = "MockTest", RepositoryUserId = "user-to-assign" };
             var existingRole = new RepositoryRole { UserId = "user-to-assign" };
 
             _mockUserManager.Setup(um => um.FindByIdAsync(command.UserId)).ReturnsAsync(userToAssign);
             _mockUnitOfWork.Setup(uow => uow.Repositories.GetById(command.RepositoryId)).ReturnsAsync(repository);
+
+            _mockMapper.Setup(mm => mm.Map<RepositoryRole>(command)).Returns(role);
+
             _mockAuthService.Setup(auth => auth.AuthorizeAsync(
                 It.IsAny<ClaimsPrincipal>(),
-                repository,
+                role,
                 It.IsAny<IEnumerable<IAuthorizationRequirement>>()))
                         .ReturnsAsync(AuthorizationResult.Success());
 
