@@ -9,7 +9,7 @@
         public DateTime TaskOwningDate { get; set; } = DateTime.UtcNow;
         public DateTime? TaskOwningEndDate { get; set; }
         public bool TaskOwningIsActive { get; set; } = true;
-        public virtual WorkTask Task { get; set; } = null!;
-        public virtual User User { get; set; } = null!;
+        public WorkTask Task { get; set; } = null!;
+        public User User { get; set; } = null!;
     }
 }

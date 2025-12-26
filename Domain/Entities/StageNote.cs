@@ -8,8 +8,8 @@
         public DateTime StageNoteDate { get; set; }
         public required string StageNoteText { get; set; }
 
-        public virtual TaskStage TaskStage { get; set; } = null!;
-        public virtual User User { get; set; } = null!;
-        public ICollection<StageNotePhotos> StageNotePhotos { get; set; } = new List<StageNotePhotos>();
+        public TaskStage TaskStage { get; set; } = null!;
+        public User User { get; set; } = null!;
+        public ICollection<StageNotePhoto> StageNotePhotos { get; set; } = new List<StageNotePhoto>();
     }
 }

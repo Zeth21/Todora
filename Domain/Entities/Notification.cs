@@ -13,6 +13,6 @@ namespace Domain.Entities
         public NotificationType NotificationType { get; set; }
         public DateTime NotificationTime { get; set; } = DateTime.UtcNow;
 
-        public virtual User User { get; set; } = null!;
+        public User User { get; set; } = null!;
     }
 }

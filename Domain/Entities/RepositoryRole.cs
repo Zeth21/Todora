@@ -10,8 +10,8 @@
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public bool RepositoryRoleIsDeleted { get; set; } = false;
 
-        public virtual Role Role { get; set; } = null!;
-        public virtual Repository Repository { get; set; } = null!;
-        public virtual User User { get; set; } = null!; 
+        public Role Role { get; set; } = null!;
+        public Repository Repository { get; set; } = null!;
+        public User User { get; set; } = null!; 
     }
 }

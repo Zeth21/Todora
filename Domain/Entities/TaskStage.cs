@@ -9,9 +9,9 @@
         public required string UserId { get; set; }
         public DateTime TaskStageDate { get; set; } = DateTime.UtcNow;
 
-        public virtual WorkTask Task { get; set; } = null!;
-        public virtual Stage Stage { get; set; } = null!;
-        public virtual User User { get; set; } = null!;
+        public WorkTask Task { get; set; } = null!;
+        public Stage Stage { get; set; } = null!;
+        public User User { get; set; } = null!;
         public ICollection<StageNote> StageNotes { get; set; } = new List<StageNote>();
     }
 }

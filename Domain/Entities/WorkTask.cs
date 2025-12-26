@@ -19,11 +19,12 @@ namespace Domain.Entities
         public int? TaskCurrentStageId { get; set; }
 
 
-        public virtual User User { get; set; } = null!;
-        public virtual Role? Role { get; set; }
-        public virtual TaskStage? CurrentTaskStage { get; set; }
-        public virtual Repository Repository { get; set; } = null!;
+        public User User { get; set; } = null!;
+        public Role? Role { get; set; }
+        public TaskStage? CurrentTaskStage { get; set; }
+        public Repository Repository { get; set; } = null!;
         public ICollection<TaskStage> TaskStages { get; set; } = new List<TaskStage>();
         public ICollection<TaskOwning> TaskOwnings { get; set; } = new List<TaskOwning>();
+        public ICollection<TaskPhoto> TaskPhotos { get; set; } = new List<TaskPhoto>();
     }
 }
