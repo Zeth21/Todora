@@ -10,7 +10,7 @@ namespace Persistence
         private readonly ApplicationDbContext _context;
 
         // Declaring a private and nullable field for every repository.
-        // This is for repositories are generated when necessary
+        // This is for generating repositories when necessary
         private INotificationRepository? _notificationRepository;
         private IRepositoryRepository? _repositoryRepository;
         private IRepositoryRoleRepository? _repositoryRoleRepository;

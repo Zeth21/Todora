@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces.Repositories;
 using Domain.Entities;
+using Domain.Enum;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,30 +26,36 @@ namespace Persistence.Repositories
             return repository;
         }
 
-        async Task<List<Repository>> IRepositoryRepository.GetUserOwningRepositoriesByUserId(string userId)
+        async Task<(List<Repository> repositories, int totalCount)> IRepositoryRepository.GetRepositories(string userId, RepositoryRelationType type, int pageSize, int pageNumber)
         {
-            var repositories = await _context
+            var query = _context
                 .Repositories
-                .AsNoTracking()
-                .Where(x => x.RepositoryUserId == userId)
-                .ToListAsync();
-            if (!repositories.Any())
-                repositories = new List<Repository>();
-            return repositories;
-        }
+                .AsQueryable()
+                .AsNoTracking();
+            switch (type) 
+            {
+                case RepositoryRelationType.All:
+                    query = query
+                        .Where(x => x.RepositoryUserId == userId || x.RepositoryRoles.Any(rr => rr.UserId == userId));
+                    break;
+                case RepositoryRelationType.Owner:
+                    query = query
+                        .Where(x => x.RepositoryUserId == userId);
+                    break;
+                case RepositoryRelationType.Working:
+                    query = query
+                        .Where(x => x.RepositoryRoles.Any(rr => rr.UserId == userId) && x.RepositoryUserId != userId);
+                    break;
+                default:
+                    break;
+            };
+            var totalcount = await query.CountAsync();
 
-        async Task<List<Repository>> IRepositoryRepository.GetUserWorkingRepositoriesByUserId(string userId)
-        {
-            var repositories = await _context
-                .Repositories
-                .Include(x => x.RepositoryRoles)
-                .AsNoTracking()
-                .Where(x => x.RepositoryRoles.Where(x => x.UserId == userId).Select(x => x.RepositoryId).Contains(x.RepositoryId))
-                .Select(x => x)
+            var repositories = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
-            if (!repositories.Any())
-                repositories = new List<Repository>();
-            return repositories;
+            return (repositories, totalcount);
         }
     }
 }

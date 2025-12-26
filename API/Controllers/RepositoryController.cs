@@ -2,6 +2,7 @@
 using Application.CQRS.Queries.RepositoryQueries;
 using Application.CQRS.Results.RepositoryResults;
 using Azure.Core;
+using Domain.Enum;
 using Domain.Values;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +23,7 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "User,Admin")]
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> CreateRepository([FromBody] RepositoryCreateCommand request, CancellationToken cancellationToken = default) 
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -32,46 +33,24 @@ namespace API.Controllers
             }
             request.UserId = userId;
             var result = await _mediator.Send(request, cancellationToken);
-            if (result.IsSucceeded)
-            {
-                return Ok(result.Data);
-            }
             return StatusCode(result.StatusCode, result);
         }
 
-            [Authorize(Roles = "User,Admin")]
-            [HttpGet("workings")]
-            public async Task<IActionResult> UserGetWorkingRepositories(CancellationToken cancellationToken = default) 
-            {
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (userId == null)
-                {
-                    return Unauthorized(StringValues.Unauthorized);
-                }
-                var request = new RepositoryGetUserWorkingsQuery { UserId = userId };
-                var result = await _mediator.Send(request, cancellationToken);
-                if (result.IsSucceeded)
-                {
-                    return Ok(result.Data);
-                }
-                return StatusCode(result.StatusCode, result);
-            }
-
         [Authorize(Roles = "User,Admin")]
-        [HttpGet("ownings")]
-        public async Task<IActionResult> UserGetOwningRepositories(CancellationToken cancellationToken = default)
+        [HttpGet]
+        public async Task<IActionResult> GetRepositories(
+            [FromQuery] RepositoryRelationType type,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] int pageNumber = 1,
+            CancellationToken cancellationToken = default)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
             {
                 return Unauthorized(StringValues.Unauthorized);
             }
-            var request = new RepositoryGetUserOwningsQuery { UserId = userId };
+            var request = new RepositoryGetQuery { UserId = userId, Type = type, PageSize = pageSize, PageNumber = pageNumber };
             var result = await _mediator.Send(request, cancellationToken);
-            if (result.IsSucceeded)
-            {
-                return Ok(result.Data);
-            }
             return StatusCode(result.StatusCode, result);
         }
     }

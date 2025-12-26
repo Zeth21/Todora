@@ -30,10 +30,6 @@ namespace API.Controllers
             }
             request.TaskCreatedUserId = userId;
             var result = await _mediator.Send(request, cancellationToken);
-            if (result.IsSucceeded)
-            {
-                return StatusCode(result.StatusCode,result.Data);
-            }
             return StatusCode(result.StatusCode,result);
         }
     }

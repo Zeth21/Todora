@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,6 @@ namespace Application.Interfaces.Repositories
     public interface IRepositoryRepository : IBaseRepository<Repository>
     {
         Task<Repository?> GetUserRepositoryByTitleAsync(string userId, string title);
-        Task<List<Repository>> GetUserOwningRepositoriesByUserId(string userId);
-        Task<List<Repository>> GetUserWorkingRepositoriesByUserId(string userId);
+        Task<(List<Repository> repositories, int totalCount)> GetRepositories(string userId, RepositoryRelationType type, int pageSize, int pageNumber);
     }
 }

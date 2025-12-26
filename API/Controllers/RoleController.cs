@@ -20,10 +20,6 @@ namespace API.Controllers
         {
             var request = new RoleGetAllQuery();
             var result = await _mediator.Send(request, cancellationToken);
-            if (result.IsSucceeded) 
-            {
-                return Ok(result.Data);
-            }
             return StatusCode(result.StatusCode,result);
         }
     }

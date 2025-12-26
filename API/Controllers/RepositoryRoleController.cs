@@ -1,4 +1,5 @@
 ﻿using Application.CQRS.Commands.RepositoryRoleCommands;
+using Domain.Enum;
 using Domain.Values;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +20,7 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = ("Admin,User"))]
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> CreateRepositoryRole([FromBody] RepositoryRoleCreateCommand request, CancellationToken cancellationToken = default)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -29,22 +30,19 @@ namespace API.Controllers
             }
             request.AuthorizedPersonId = userId;
             var result = await _mediator.Send(request, cancellationToken);
-            if (result.IsSucceeded)
-            {
-                return Ok(result.Data);
-            }
             return StatusCode(result.StatusCode, result);
         }
 
         [Authorize(Roles = "Admin,User")]
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateRepositoryRole([FromBody] RepositoryRoleUpdateCommand request, CancellationToken cancellationToken = default) 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateRepositoryRole(int id, [FromBody] RoleValues roleValue, CancellationToken cancellationToken = default) 
         {
-            var result = await _mediator.Send(request, cancellationToken);
-            if (result.IsSucceeded)
+            var request = new RepositoryRoleUpdateCommand
             {
-                return Ok(result.Data);
-            }
+                RepositoryRoleId = id,
+                RoleValue = roleValue
+            };
+            var result = await _mediator.Send(request, cancellationToken);
             return StatusCode(result.StatusCode, result);
         }
     }

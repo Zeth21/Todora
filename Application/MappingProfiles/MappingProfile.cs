@@ -27,8 +27,7 @@ namespace Application.MappingProfiles
                 .ForMember(x => x.RepositoryUserId, o => o.MapFrom(s => s.UserId));
             CreateMap<Repository, RepositoryCreateCommandResult>();
 
-            CreateMap<Repository, RepositoryGetUserOwningsQueryResult>();
-            CreateMap<Repository, RepositoryGetUserWorkingsQueryResult>();
+            CreateMap<Repository, RepositoryItem>();
 
             CreateMap<User, UserFindByUserNameQueryResult>();
 

@@ -30,21 +30,13 @@ namespace API.Controllers
         public async Task<IActionResult> Register([FromBody] UserCreateCommand request, CancellationToken cancellationToken = default)
         {
             var result = await _mediator.Send(request, cancellationToken);
-            if (result.IsSucceeded)
-            {
-                return Ok(result.Message);
-            }
             return StatusCode(result.StatusCode, result);
         }
 
-        [HttpGet("find")]
+        [HttpGet]
         public async Task<IActionResult> FindUsers([FromQuery] UserFindByUserNameQuery request, CancellationToken cancellationToken = default) 
         {
             var result = await _mediator.Send(request, cancellationToken);
-            if (result.IsSucceeded)
-            {
-                return Ok(result.Data);
-            }
             return StatusCode(result.StatusCode, result);
         }
     }
