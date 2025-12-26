@@ -18,5 +18,7 @@ namespace Domain.Entities
         public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
         public ICollection<StageNote> StageNotes { get; set; } = new List<StageNote>();
         public ICollection<WorkTask> Tasks { get; set; } = new List<WorkTask>();
+        public ICollection<StageNotePhoto> StageNotePhotos { get; set; } = new List<StageNotePhoto>();
+        public ICollection<TaskPhoto> TaskPhotos { get; set; } = new List<TaskPhoto>();
     }
 }

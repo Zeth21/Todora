@@ -21,8 +21,8 @@ namespace Persistence
         public DbSet<TaskOwning> TaskOwnings { get; set; }
         public DbSet<TaskStage> TaskStages { get; set; }
         public DbSet<StageNote> StageNotes { get; set; }
-        public DbSet<StageNotePhotos> StageNotePhotos { get; set; }
-
+        public DbSet<StageNotePhoto> StageNotePhotos { get; set; }
+        public DbSet<TaskPhoto> TaskPhotos { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -392,18 +392,51 @@ namespace Persistence
             });
 
             //STAGENOTEPHOTOS SETTINGS
-            builder.Entity<StageNotePhotos>(snp => 
+            builder.Entity<StageNotePhoto>(snp => 
             {
                 snp.HasKey(snp => snp.PhotoId);
 
                 snp.Property(snp => snp.PhotoId)
                 .ValueGeneratedOnAdd();
 
+                snp.Property(n => n.PhotoUploadDate)
+                .HasColumnType("datetime2(0)");
+
                 //Building relationship with StageNote
                 snp.HasOne(snp => snp.StageNote)
                 .WithMany(sn => sn.StageNotePhotos)
                 .HasForeignKey(snp => snp.StageNoteId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+                //Building relationship with User
+                snp.HasOne(snp => snp.User)
+                .WithMany(u => u.StageNotePhotos)
+                .HasForeignKey(snp => snp.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            //TASKPHOTO SETTINGS
+            builder.Entity<TaskPhoto>(entity =>
+            {
+                entity.HasKey(tp => tp.PhotoId);
+
+                entity.Property(tp => tp.PhotoId)
+                .ValueGeneratedOnAdd();
+
+                entity.Property(n => n.PhotoUploadDate)
+                .HasColumnType("datetime2(0)");
+
+                //Building relationship with Task
+                entity.HasOne(tp => tp.Task)
+                .WithMany(t => t.TaskPhotos)
+                .HasForeignKey(tp => tp.TaskId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+                //Building relationship with User
+                entity.HasOne(tp => tp.User)
+                .WithMany(u => u.TaskPhotos)
+                .HasForeignKey(tp => tp.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
             });
         }
 
