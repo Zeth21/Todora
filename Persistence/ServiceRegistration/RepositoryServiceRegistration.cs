@@ -1,6 +1,8 @@
 ﻿using Application.Interfaces.Data.Security;
+using Application.Interfaces.File;
 using Application.Interfaces.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
+using Persistence.Data.File;
 using Persistence.Data.Security;
 
 namespace Persistence.ServiceRegistration
@@ -14,6 +16,7 @@ namespace Persistence.ServiceRegistration
             services.AddDbContext<ApplicationDbContext>();
             services.AddTransient<IJWTGenerator, JWTGenerator>();
             services.AddScoped<IRepositoryContextResolver, RepositoryContextResolver>();
+            services.AddTransient<IFileService, FileService>();
 
             //services.AddScoped<INotificationRepository, NotificationRepository>();
             //services.AddScoped<IRepositoryRepository, RepositoryRepository>();

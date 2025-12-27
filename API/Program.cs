@@ -220,6 +220,7 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseRouting();
 // app.UseCors();
