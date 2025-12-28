@@ -45,6 +45,13 @@ namespace Persistence.Data.File
         }
         public Task DeletePhotosAsync(IList<string> filePaths)
         {
+            if (filePaths == null || !filePaths.Any())
+                return Task.CompletedTask;
+            foreach (var filePath in filePaths) 
+            {
+                if(File.Exists(filePath))
+
+            }
             throw new NotImplementedException();
         }
 
