@@ -47,12 +47,29 @@ namespace Persistence.Data.File
         {
             if (filePaths == null || !filePaths.Any())
                 return Task.CompletedTask;
-            foreach (var filePath in filePaths) 
-            {
-                if(File.Exists(filePath))
+            string rootPath = env.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
 
+            foreach (var dbPath in filePaths)
+            {
+                if (string.IsNullOrEmpty(dbPath)) continue;
+
+                string systemPath = dbPath.Replace("/", Path.DirectorySeparatorChar.ToString())
+                                          .Replace("\\", Path.DirectorySeparatorChar.ToString());
+                string fullPath = Path.Combine(rootPath, systemPath);
+
+                if (System.IO.File.Exists(fullPath))
+                {
+                    try
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
             }
-            throw new NotImplementedException();
+
+            return Task.CompletedTask;
         }
 
     }
