@@ -2,12 +2,14 @@
 using Application.CQRS.Results;
 using Application.CQRS.Results.RepositoryResults;
 using Application.Exceptions;
+using Application.Interfaces.File;
 using Application.Interfaces.UnitOfWork;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Enum;
 using Domain.Values;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.CQRS.Handlers.RepositoryHandlers
 {
@@ -15,10 +17,12 @@ namespace Application.CQRS.Handlers.RepositoryHandlers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public RepositoryCreateCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IFileService _fileService;
+        public RepositoryCreateCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IFileService fileService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _fileService = fileService;
         }
         public async Task<Result<RepositoryCreateCommandResult>> Handle(RepositoryCreateCommand request, CancellationToken cancellationToken)
         {
@@ -30,11 +34,14 @@ namespace Application.CQRS.Handlers.RepositoryHandlers
             {
                 new RepositoryRole { UserId = request.UserId, RoleId = (int)RoleValues.Owner }
             };
+            if (request.RepositoryPhoto is not null)
+            {
+                var photos = new List<IFormFile>() { request.RepositoryPhoto };
+                var filePaths = await _fileService.SavePhotosAsync(photos, StringValues.RepositoryPhotoFolder);
+                newRepository.PhotoPath = filePaths.FirstOrDefault()!;
+            }
             await _unitOfWork.Repositories.AddAsync(newRepository);
-
-            var affectedRows = await _unitOfWork.CompleteAsync();
-            if (affectedRows < 2)
-                throw new SaveDataException(StringValues.SaveFail, new Exception());
+            await _unitOfWork.CompleteAsync();
             var result = _mapper.Map<RepositoryCreateCommandResult>(newRepository);
             return Result<RepositoryCreateCommandResult>.Success(data: result, message: StringValues.RepositoryCreateSuccess);
         }

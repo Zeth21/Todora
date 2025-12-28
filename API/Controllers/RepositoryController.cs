@@ -22,16 +22,15 @@ namespace API.Controllers
             _mediator = mediator;
         }
 
-        [Authorize(Roles = "User,Admin")]
         [HttpPost]
-        public async Task<IActionResult> CreateRepository([FromBody] RepositoryCreateCommand request, CancellationToken cancellationToken = default) 
+        public async Task<IActionResult> CreateRepository([FromForm] RepositoryCreateCommand request, CancellationToken cancellationToken = default) 
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null)
-            {
-                return Unauthorized(StringValues.Unauthorized);
-            }
-            request.UserId = userId;
+            //if (userId == null)
+            //{
+            //    return Unauthorized(StringValues.Unauthorized);
+            //}
+            //request.UserId = userId;
             var result = await _mediator.Send(request, cancellationToken);
             return StatusCode(result.StatusCode, result);
         }

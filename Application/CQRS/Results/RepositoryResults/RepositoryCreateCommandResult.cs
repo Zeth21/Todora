@@ -9,7 +9,7 @@ namespace Application.CQRS.Results.RepositoryResults
     public class RepositoryCreateCommandResult
     {
         public int RepositoryId { get; set; }
-        public string RepositoryPhotoPath { get; set; } = null!;
+        public string PhotoPath { get; set; } = null!;
         public string RepositoryTitle { get; set; } = null!;
         public string RepositoryDescription { get; set; } = null!;
         public DateTime RepositoryCreateDate { get; set; }
