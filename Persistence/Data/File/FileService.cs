@@ -8,7 +8,7 @@ namespace Persistence.Data.File
         IWebHostEnvironment env
         ) : IFileService
     {
-        public async Task<List<string>> SavePhotosAsync(IFormFileCollection files, string folderName)
+        public async Task<List<string>> SavePhotosAsync(IList<IFormFile> files, string folderName)
         {
 
             var filePaths = new List<string>();
@@ -43,5 +43,10 @@ namespace Persistence.Data.File
             }
             return filePaths;
         }
+        public Task DeletePhotosAsync(IList<string> filePaths)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }
