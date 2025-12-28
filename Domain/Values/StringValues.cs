@@ -43,5 +43,11 @@ namespace Domain.Values
         public const string InvalidTitleLength75 = "Title cannot exceed 75 characters!";
         public const string InvalidDescriptionLength75 = "Description cannot exceed 75 characters!";
         public const string InvalidTitleSame = "There is already another record that has same title!";
+
+        //File Values
+        public const string RepositoryPhotoFolder = "Repository";
+        public const string UserPhotoFolder = "User";
+        public const string TaskPhotoFolder = "Task";
+        public const string StageNotePhotoFolder = "StageNote";
     }
 }
