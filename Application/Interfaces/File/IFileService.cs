@@ -9,6 +9,7 @@ namespace Application.Interfaces.File
 {
     public interface IFileService
     {
-        Task<List<string>> SavePhotosAsync(IFormFileCollection files, string folderName);
+        Task<List<string>> SavePhotosAsync(IList<IFormFile> files, string folderName);
+        Task DeletePhotosAsync(IList<string> filePaths);
     }
 }
