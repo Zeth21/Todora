@@ -1,4 +1,5 @@
-﻿using Application.CQRS.Commands.RepositoryCommands;
+﻿using API.RequestDTO_s.RepositoryController;
+using Application.CQRS.Commands.RepositoryCommands;
 using Application.CQRS.Queries.RepositoryQueries;
 using Application.CQRS.Results.RepositoryResults;
 using Azure.Core;
@@ -23,15 +24,21 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRepository([FromForm] RepositoryCreateCommand request, CancellationToken cancellationToken = default) 
+        public async Task<IActionResult> CreateRepository([FromForm] CreateRepositoryControllerDTO request, CancellationToken cancellationToken = default) 
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            //if (userId == null)
-            //{
-            //    return Unauthorized(StringValues.Unauthorized);
-            //}
-            //request.UserId = userId;
-            var result = await _mediator.Send(request, cancellationToken);
+            if (userId == null)
+            {
+                return Unauthorized(StringValues.Unauthorized);
+            }
+            var command = new RepositoryCreateCommand
+            {
+                RepositoryPhoto = request.RepositoryPhoto,
+                RepositoryTitle = request.RepositoryTitle,
+                RepositoryDescription = request.RepositoryDescription,
+                UserId = userId
+            };
+            var result = await _mediator.Send(command, cancellationToken);
             return StatusCode(result.StatusCode, result);
         }
 
