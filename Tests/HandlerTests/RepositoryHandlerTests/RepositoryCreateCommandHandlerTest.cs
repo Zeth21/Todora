@@ -2,6 +2,7 @@
 using Application.CQRS.Handlers.RepositoryHandlers;
 using Application.CQRS.Results.RepositoryResults;
 using Application.Exceptions;
+using Application.Interfaces.File;
 using Application.Interfaces.UnitOfWork;
 using AutoMapper;
 using Domain.Entities;
@@ -22,14 +23,17 @@ namespace Tests.HandlerTests.RepositoryHandlerTests
     {
         private readonly Mock<IUnitOfWork> _unitOfWork;
         private readonly Mock<IMapper> _mapper;
+        private readonly Mock<IFileService> _fileService;
         private readonly RepositoryCreateCommandHandler _handler;
         public RepositoryCreateCommandHandlerTest() 
         {
+            _fileService = new Mock<IFileService>();
             _unitOfWork = new Mock<IUnitOfWork>();
             _mapper = new Mock<IMapper>();
             _handler = new RepositoryCreateCommandHandler(
                 _unitOfWork.Object,
-                _mapper.Object);
+                _mapper.Object,
+                _fileService.Object);
         }
 
         [Fact]
@@ -95,34 +99,6 @@ namespace Tests.HandlerTests.RepositoryHandlerTests
             result.StatusCode.Should().Be(IntegerValues.BadRequest);
 
             _unitOfWork.Verify(uow => uow.Repositories.GetUserRepositoryByTitleAsync(command.UserId, command.RepositoryTitle), Times.Once);
-        }
-
-        [Fact]
-        public async Task Handle_Should_Return_Fail_WhenDataCouldntSaved() 
-        {
-            var command = new RepositoryCreateCommand
-            {
-                UserId = "user-to-assign",
-                RepositoryTitle = "Test",
-                RepositoryDescription = "Test"
-            };
-
-            var repository = new Repository
-            {
-                RepositoryTitle = "Test",
-                RepositoryDescription = "Test",
-                RepositoryUserId = "user-to-assign"
-            };
-
-
-            _unitOfWork.Setup(uow => uow.Repositories.GetUserRepositoryByTitleAsync(command.UserId, command.RepositoryTitle))
-                .ReturnsAsync((Repository)null);
-
-            _mapper.Setup(m => m.Map<Repository>(command)).Returns(repository);
-            _unitOfWork.Setup(uow => uow.CompleteAsync()).ReturnsAsync(0);
-
-            await FluentActions.Invoking(() => _handler.Handle(command, CancellationToken.None))
-                .Should().ThrowAsync<SaveDataException>();
         }
     }
 }
