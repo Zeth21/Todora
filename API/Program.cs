@@ -10,6 +10,7 @@ using Persistence;
 using Persistence.Data.Security;
 using Persistence.Seed;
 using Persistence.ServiceRegistration;
+using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.MSSqlServer;
@@ -155,37 +156,8 @@ builder.Services.AddAuthentication(options =>
 //    });
 //});
 
-// ===================== Swagger =====================
-builder.Services.AddSwaggerGen(c =>
-{
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "JWT için 'Bearer {token}' formatýný kullanýn"
-    });
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
-                }
-            },
-            new string[]{}
-        }
-    });
-});
-
-
-
+// ===================== Scalar =====================
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
@@ -206,18 +178,8 @@ using (var scope = app.Services.CreateScope())
 
 // ===================== Middleware Pipeline =====================
 
-// Swagger
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Todora API V1");
-        c.RoutePrefix = string.Empty;
-    });
-}
-
-
+app.MapOpenApi();
+app.MapScalarApiReference();
 
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 app.UseStaticFiles();
